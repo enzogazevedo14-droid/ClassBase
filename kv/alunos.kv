@@ -1,0 +1,30 @@
+<StudentListScreen>:
+    BoxLayout:
+        orientation: "vertical"
+        padding: 32
+        spacing: 12
+
+        Label:
+            text: "Alunos"
+            font_size: "24sp"
+
+        TextInput:
+            hint_text: "Pesquisar por RM, nome ou curso"
+            multiline: False
+            size_hint_y: None
+            height: "48dp"
+
+        Label:
+            text: "A lista de alunos será conectada ao SQLite na próxima etapa."
+
+        Button:
+            text: "Editar aluno"
+            size_hint_y: None
+            height: "48dp"
+            on_release: root.manager.current = "editar"
+
+        Button:
+            text: "Voltar"
+            size_hint_y: None
+            height: "48dp"
+            on_release: root.manager.current = "home"

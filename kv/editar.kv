@@ -1,0 +1,38 @@
+<EditStudentScreen>:
+    BoxLayout:
+        orientation: "vertical"
+        padding: 32
+        spacing: 12
+
+        Label:
+            text: "Editar aluno"
+            font_size: "24sp"
+
+        TextInput:
+            hint_text: "RM"
+            multiline: False
+            size_hint_y: None
+            height: "48dp"
+
+        TextInput:
+            hint_text: "Nome"
+            multiline: False
+            size_hint_y: None
+            height: "48dp"
+
+        TextInput:
+            hint_text: "Curso"
+            multiline: False
+            size_hint_y: None
+            height: "48dp"
+
+        Button:
+            text: "Salvar alterações"
+            size_hint_y: None
+            height: "48dp"
+
+        Button:
+            text: "Voltar"
+            size_hint_y: None
+            height: "48dp"
+            on_release: root.manager.current = "alunos"
