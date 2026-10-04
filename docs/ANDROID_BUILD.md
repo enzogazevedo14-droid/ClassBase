@@ -39,24 +39,30 @@ buildozer -v android debug
 
 O `buildozer.spec` usa `p4a.branch = develop` no toolchain validado.
 
-## Resultado validado
+## Resultados validados
 
-O build de debug gera `bin/classbase-0.1.0-arm64-v8a-debug.apk`.
+### Baseline Android inicial
 
-Último APK validado da revisão atual:
+- Arquivo: `bin/classbase-0.1.0-arm64-v8a-debug.apk`
+- Tamanho: 23.272.018 bytes
+- Assinatura: APK Signature Scheme v2
+- SHA-256: `6DC49552F5C641E08B0EAD358C9738F0E37BCF86C2D84E3FB4838CA4B4122AE0`
 
-- Commit funcional: `219466c`
-- 26/26 testes automatizados: PASS
+### Release Candidate atual
+
+- Commit do código: `219466c`
+- Testes automatizados: 26/26 PASS
 - Build Android: PASS
-- Assinatura debug: APK Signature Scheme v2 válida
-- Tamanho do APK final validado: 23.273.754 bytes
+- Arquivo preservado no projeto: `dist/ClassBase-0.1.0-rc-debug.apk`
+- Cópia para teste: `C:\\Users\\User\\Downloads\\ClassBase-0.1.0-debug.apk`
+- Tamanho: 23.273.754 bytes
+- Assinatura: APK Signature Scheme v2 válida
 - SHA-256: `83F026EAE2B5E1EEA8CBD8D06DC2A1DAD167F94B399C7203C1A0D8436825F401`
-- Cópia para teste: `C:\Users\User\Downloads\ClassBase-0.1.0-debug.apk`
 
-Os builds incrementais passaram a reutilizar o cache do toolchain, reduzindo o tempo de empacotamento após a compilação inicial.
+Os builds incrementais reutilizam o cache do toolchain; após a compilação inicial, o Gradle do RC concluiu em cerca de 6 segundos.
 
 ## Pendência de gate
 
-O APK ainda precisa de QA em aparelho Android real: instalação, abertura, login, CRUD completo, persistência após reiniciar o aplicativo, teclado/botão voltar e logout.
+O APK ainda precisa de QA em aparelho Android real: instalação, abertura, login, CRUD completo, persistência após reiniciar o aplicativo, teclado/botão voltar e logout. O roteiro detalhado está em `docs/RELEASE_CHECKLIST.md`.
 
-O APK é artefato de build e não deve ser versionado no Git.
+Os APKs são artefatos de build e não devem ser versionados no Git.
