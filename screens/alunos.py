@@ -33,8 +33,8 @@ class StudentListScreen(Screen):
             row = BoxLayout(
                 orientation="horizontal",
                 size_hint_y=None,
-                height="84dp",
-                spacing=8,
+                height="104dp",
+                spacing=10,
                 padding=(12, 8),
             )
             with row.canvas.before:
@@ -52,9 +52,11 @@ class StudentListScreen(Screen):
             student_label = Label(
                 text=(
                     f"{student['nome']}\n"
-                    f"RM: {student['rm']} | {student['curso']}"
+                    f"RM: {student['rm']}\n"
+                    f"{student['curso']}"
                 ),
                 color=(0.10, 0.14, 0.20, 1),
+                font_size="14sp",
                 halign="left",
                 valign="middle",
             )
@@ -63,10 +65,15 @@ class StudentListScreen(Screen):
             )
             row.add_widget(student_label)
 
-            edit_button = Button(
-                text="Editar",
+            actions = BoxLayout(
+                orientation="vertical",
                 size_hint_x=None,
                 width="76dp",
+                spacing=6,
+            )
+
+            edit_button = Button(
+                text="Editar",
                 background_normal="",
                 background_color=(0.90, 0.94, 1, 1),
                 color=(0.08, 0.27, 0.55, 1),
@@ -74,12 +81,10 @@ class StudentListScreen(Screen):
             edit_button.bind(
                 on_release=lambda _, sid=student["id"]: self.open_edit(sid)
             )
-            row.add_widget(edit_button)
+            actions.add_widget(edit_button)
 
             delete_button = Button(
                 text="Excluir",
-                size_hint_x=None,
-                width="76dp",
                 background_normal="",
                 background_color=(0.88, 0.25, 0.28, 1),
                 color=(1, 1, 1, 1),
@@ -88,7 +93,9 @@ class StudentListScreen(Screen):
                 on_release=lambda _, sid=student["id"], name=student["nome"]:
                     self.request_delete(sid, name)
             )
-            row.add_widget(delete_button)
+            actions.add_widget(delete_button)
+
+            row.add_widget(actions)
             container.add_widget(row)
 
         return students
