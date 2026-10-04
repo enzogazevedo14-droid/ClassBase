@@ -41,10 +41,21 @@ O `buildozer.spec` usa `p4a.branch = develop` no toolchain validado.
 
 ## Resultado validado
 
-O build de debug gerou `bin/classbase-0.1.0-arm64-v8a-debug.apk`.
+O build de debug gera `bin/classbase-0.1.0-arm64-v8a-debug.apk`.
 
-- Tamanho: 23.272.018 bytes
-- Assinatura debug validada com APK Signature Scheme v2
-- SHA-256: `6DC49552F5C641E08B0EAD358C9738F0E37BCF86C2D84E3FB4838CA4B4122AE0`
+Último APK validado da revisão atual:
+
+- Commit funcional: `219466c`
+- 26/26 testes automatizados: PASS
+- Build Android: PASS
+- Assinatura debug: APK Signature Scheme v2 válida
+- SHA-256: `83F026EAE2B5E1EEA8CBD8D06DC2A1DAD167F94B399C7203C1A0D8436825F401`
+- Cópia para teste: `C:\Users\User\Downloads\ClassBase-0.1.0-debug.apk`
+
+Os builds incrementais passaram a reutilizar o cache do toolchain, reduzindo o tempo de empacotamento após a compilação inicial.
+
+## Pendência de gate
+
+O APK ainda precisa de QA em aparelho Android real: instalação, abertura, login, CRUD completo, persistência após reiniciar o aplicativo, teclado/botão voltar e logout.
 
 O APK é artefato de build e não deve ser versionado no Git.
