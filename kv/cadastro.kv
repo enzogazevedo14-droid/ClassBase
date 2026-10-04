@@ -1,3 +1,5 @@
+#:import COURSES screens.cadastro.COURSES
+
 <RegisterStudentScreen>:
     BoxLayout:
         orientation: "vertical"
@@ -9,27 +11,37 @@
             font_size: "24sp"
 
         TextInput:
+            id: rm_input
             hint_text: "RM"
             multiline: False
             size_hint_y: None
             height: "48dp"
 
         TextInput:
+            id: name_input
             hint_text: "Nome"
             multiline: False
             size_hint_y: None
             height: "48dp"
 
-        TextInput:
-            hint_text: "Curso"
-            multiline: False
+        Spinner:
+            id: course_input
+            text: "Selecione o curso"
+            values: COURSES
             size_hint_y: None
             height: "48dp"
+
+        Label:
+            id: feedback
+            text: ""
+            size_hint_y: None
+            height: "40dp"
 
         Button:
             text: "Cadastrar"
             size_hint_y: None
             height: "48dp"
+            on_release: root.register_student()
 
         Button:
             text: "Voltar"

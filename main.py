@@ -2,9 +2,10 @@ from pathlib import Path
 
 from kivy.app import App
 from kivy.lang import Builder
-from kivy.uix.screenmanager import ScreenManager
 
+from database import StudentRepository
 from screens import (
+    ClassBaseScreenManager,
     EditStudentScreen,
     HomeScreen,
     LoginScreen,
@@ -30,11 +31,17 @@ def load_kv_files():
 
 
 class ClassBaseApp(App):
+    def __init__(self, db_path=None, **kwargs):
+        super().__init__(**kwargs)
+        self.db_path = Path(db_path) if db_path else None
+
     def build(self):
         self.title = "ClassBase"
         load_kv_files()
 
-        manager = ScreenManager()
+        database_path = self.db_path or Path(self.user_data_dir) / "classbase.db"
+        manager = ClassBaseScreenManager()
+        manager.repository = StudentRepository(database_path)
         manager.add_widget(LoginScreen(name="login"))
         manager.add_widget(HomeScreen(name="home"))
         manager.add_widget(RegisterStudentScreen(name="cadastro"))
