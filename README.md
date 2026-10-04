@@ -30,6 +30,8 @@ Aplicativo mobile para gerenciamento de alunos desenvolvido em Python com Kivy e
 - Logout limpa os campos e o feedback da tela de login
 - Banco salvo no diretório gravável da aplicação
 - Interface mobile revisada para telas pequenas
+- Identidade Android própria com ícone e presplash
+- Backup automático do banco desativado no Manifest Android
 - 26 testes automatizados passando
 - Build APK debug arm64-v8a: PASS (04/10/2026)
 - Assinatura APK v2: PASS

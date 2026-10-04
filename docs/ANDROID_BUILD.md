@@ -48,18 +48,31 @@ O `buildozer.spec` usa `p4a.branch = develop` no toolchain validado.
 - Assinatura: APK Signature Scheme v2
 - SHA-256: `6DC49552F5C641E08B0EAD358C9738F0E37BCF86C2D84E3FB4838CA4B4122AE0`
 
-### Release Candidate atual
+### RC funcional anterior (pré-branding)
 
 - Commit do código: `219466c`
 - Testes automatizados: 26/26 PASS
 - Build Android: PASS
 - Arquivo preservado no projeto: `dist/ClassBase-0.1.0-rc-debug.apk`
-- Cópia para teste: `C:\\Users\\User\\Downloads\\ClassBase-0.1.0-debug.apk`
 - Tamanho: 23.273.754 bytes
 - Assinatura: APK Signature Scheme v2 válida
 - SHA-256: `83F026EAE2B5E1EEA8CBD8D06DC2A1DAD167F94B399C7203C1A0D8436825F401`
 
-Os builds incrementais reutilizam o cache do toolchain; após a compilação inicial, o Gradle do RC concluiu em cerca de 6 segundos.
+### Release Candidate atual (branding)
+
+- Commit do código: `54fb223`
+- Tag: `android-branded-rc-0.1.0`
+- Testes automatizados: 26/26 PASS
+- Build Android: PASS
+- Ícone próprio e presplash empacotados no APK
+- `android.allowBackup=false` confirmado no Manifest compilado
+- Arquivo preservado no projeto: `dist/ClassBase-0.1.0-branded-rc-debug.apk`
+- Cópia para teste: `C:\\Users\\User\\Downloads\\ClassBase-0.1.0-debug.apk`
+- Tamanho: 23.310.470 bytes
+- Assinatura: APK Signature Scheme v2 válida
+- SHA-256: `525FE263ED42F4E23AB6D1887A9B1B6FD279EB23DD9FE6708426A1F94FEBC9DB`
+
+Os builds incrementais reutilizam o cache do toolchain; o Gradle do RC branded concluiu com `BUILD SUCCESSFUL` em cerca de 10 segundos.
 
 ## Pendência de gate
 

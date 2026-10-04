@@ -1,11 +1,13 @@
 # Checklist de QA física — ClassBase 0.1.0 RC
 
-Execute este checklist no APK `dist/ClassBase-0.1.0-rc-debug.apk`.
+Execute este checklist no APK `dist/ClassBase-0.1.0-branded-rc-debug.apk` ou na cópia `C:\\Users\\User\\Downloads\\ClassBase-0.1.0-debug.apk`.
 
 ## Instalação e abertura
 
 - [ ] Instalar o APK sem erro.
+- [ ] Confirmar que o ícone do ClassBase aparece corretamente no launcher.
 - [ ] Abrir o aplicativo em orientação retrato.
+- [ ] Confirmar que o presplash do ClassBase aparece sem distorção.
 - [ ] Confirmar que a tela de login aparece sem cortes ou tela preta.
 - [ ] Confirmar que teclado e campos de texto funcionam.
 
