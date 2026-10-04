@@ -9,20 +9,29 @@
             font_size: "32sp"
 
         TextInput:
+            id: username_input
             hint_text: "Usuário"
             multiline: False
             size_hint_y: None
             height: "48dp"
 
         TextInput:
+            id: password_input
             hint_text: "Senha"
             password: True
             multiline: False
             size_hint_y: None
             height: "48dp"
+            on_text_validate: root.login()
+
+        Label:
+            id: feedback
+            text: ""
+            size_hint_y: None
+            height: "40dp"
 
         Button:
             text: "Entrar"
             size_hint_y: None
             height: "48dp"
-            on_release: root.manager.current = "home"
+            on_release: root.login()

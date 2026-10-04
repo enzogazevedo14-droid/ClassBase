@@ -37,3 +37,13 @@ def initialize_database(db_path=DEFAULT_DB_PATH):
             )
             """
         )
+        connection.execute(
+            """
+            CREATE TABLE IF NOT EXISTS usuarios (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                usuario TEXT NOT NULL UNIQUE,
+                salt BLOB NOT NULL,
+                senha_hash BLOB NOT NULL
+            )
+            """
+        )

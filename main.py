@@ -3,7 +3,7 @@ from pathlib import Path
 from kivy.app import App
 from kivy.lang import Builder
 
-from database import StudentRepository
+from database import AuthRepository, StudentRepository
 from screens import (
     ClassBaseScreenManager,
     EditStudentScreen,
@@ -42,6 +42,8 @@ class ClassBaseApp(App):
         database_path = self.db_path or Path(self.user_data_dir) / "classbase.db"
         manager = ClassBaseScreenManager()
         manager.repository = StudentRepository(database_path)
+        manager.auth_repository = AuthRepository(database_path)
+        manager.auth_repository.ensure_default_user()
         manager.add_widget(LoginScreen(name="login"))
         manager.add_widget(HomeScreen(name="home"))
         manager.add_widget(RegisterStudentScreen(name="cadastro"))

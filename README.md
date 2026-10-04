@@ -4,7 +4,7 @@ Aplicativo mobile para gerenciamento de alunos desenvolvido em Python com Kivy e
 
 ## Escopo
 
-- Login
+- Login local
 - Cadastro de alunos
 - Listagem e pesquisa
 - Edição
@@ -22,16 +22,23 @@ Aplicativo mobile para gerenciamento de alunos desenvolvido em Python com Kivy e
 ## Estado atual
 
 - Ambiente Windows/WSL configurado
-- Banco SQLite e repositório de alunos implementados
-- Navegação Kivy com Login, Home, Cadastro, Alunos e Edição
-- Cadastro integrado ao SQLite
+- Banco SQLite implementado
+- CRUD completo integrado à interface Kivy
 - Pesquisa por RM, nome ou curso
-- Edição integrada ao SQLite
-- Exclusão integrada ao SQLite
 - Contador de alunos na Home
-- 19 testes automatizados passando
-- Login real: pendente
-- Build APK: pendente
+- Login local com senha protegida por PBKDF2-HMAC + salt
+- Banco salvo no diretório gravável da aplicação
+- 25 testes automatizados passando
+- Build APK: próximo gate
+
+## Conta de demonstração
+
+Enquanto o projeto está em desenvolvimento, a primeira execução cria:
+
+- Usuário: `admin`
+- Senha: `classbase123`
+
+Essa credencial é apenas para desenvolvimento/apresentação e pode ser alterada antes da entrega final.
 
 ## Executar no Windows
 
@@ -45,4 +52,4 @@ Aplicativo mobile para gerenciamento de alunos desenvolvido em Python com Kivy e
 .\.venv\Scripts\python.exe -m unittest discover -v
 ```
 
-O banco de produção é salvo no diretório de dados do usuário da aplicação, o que também é compatível com o armazenamento gravável no Android.
+O banco de produção é salvo no diretório de dados do usuário da aplicação, compatível com armazenamento gravável no Android.
