@@ -35,6 +35,20 @@ class LoginFlowTests(unittest.TestCase):
             "Usuário ou senha inválidos.",
         )
 
+    def test_logout_clears_login_fields(self):
+        self.screen.ids.username_input.text = "admin"
+        self.screen.ids.password_input.text = "classbase123"
+        self.screen.ids.feedback.text = "mensagem"
+
+        self.assertTrue(self.screen.login())
+        home = self.manager.get_screen("home")
+        self.assertTrue(home.logout())
+
+        self.assertEqual(self.manager.current, "login")
+        self.assertEqual(self.screen.ids.username_input.text, "")
+        self.assertEqual(self.screen.ids.password_input.text, "")
+        self.assertEqual(self.screen.ids.feedback.text, "")
+
 
 if __name__ == "__main__":
     unittest.main()
