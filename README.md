@@ -71,6 +71,7 @@ O banco de produção é salvo no diretório de dados do usuário da aplicação
 - [Roteiro da apresentação](docs/APRESENTACAO.md)
 - [Roteiro de demonstração](docs/ROTEIRO_DEMO.md)
 - [Perguntas para defesa](docs/PERGUNTAS_DEFESA.md)
+- [Plano de entrega](docs/PLANO_ENTREGA.md)
 - [Build Android](docs/ANDROID_BUILD.md)
 - [Checklist de QA física](docs/RELEASE_CHECKLIST.md)
 

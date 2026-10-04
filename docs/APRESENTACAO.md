@@ -4,7 +4,8 @@ Sugestão: apresentação de 8 a 12 minutos + demonstração.
 
 ## Slide 1 — ClassBase
 
-**Título:** ClassBase  
+**Título:** ClassBase
+
 **Subtítulo:** Aplicativo mobile para gerenciamento de alunos
 
 Falar:
