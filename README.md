@@ -27,13 +27,13 @@ Aplicativo mobile para gerenciamento de alunos desenvolvido em Python com Kivy e
 - Pesquisa por RM, nome ou curso
 - Contador de alunos na Home
 - Login local com senha protegida por PBKDF2-HMAC + salt
+- Logout limpa os campos e o feedback da tela de login
 - Banco salvo no diretório gravável da aplicação
 - Interface mobile revisada para telas pequenas
-- Logout limpa credenciais e mensagens da tela de login
 - 26 testes automatizados passando
 - Build APK debug arm64-v8a: PASS (04/10/2026)
-- RC Android validado em assinatura e integridade
-- QA em aparelho físico: próximo gate
+- Assinatura APK v2: PASS
+- Próximo gate: instalação e QA em aparelho Android real
 
 ## Conta de demonstração
 
