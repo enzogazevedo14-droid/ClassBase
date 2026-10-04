@@ -1,6 +1,7 @@
 from pathlib import Path
 
 from kivy.app import App
+from kivy.core.window import Window
 from kivy.lang import Builder
 
 from database import AuthRepository, StudentRepository
@@ -37,6 +38,7 @@ class ClassBaseApp(App):
 
     def build(self):
         self.title = "ClassBase"
+        Window.softinput_mode = "resize"
         load_kv_files()
 
         database_path = self.db_path or Path(self.user_data_dir) / "classbase.db"
