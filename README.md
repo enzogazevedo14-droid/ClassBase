@@ -32,10 +32,13 @@ Aplicativo mobile para gerenciamento de alunos desenvolvido em Python com Kivy e
 - Interface mobile revisada para telas pequenas
 - Identidade Android própria com ícone e presplash
 - Backup automático do banco desativado no Manifest Android
-- 26 testes automatizados passando
+- 29 testes automatizados passando
 - Build APK debug arm64-v8a: PASS (04/10/2026)
 - Assinatura APK v2: PASS
-- Próximo gate: instalação e QA em aparelho Android real
+- QA física crítica no POCO C75 / Android 16: PASS
+- Cadastro e edição ajustados para uso com teclado virtual
+- Feedback de sucesso validado em verde no aparelho real
+- Persistência SQLite após reinício e atualização do APK: PASS
 
 ## Conta de demonstração
 

@@ -74,8 +74,40 @@ O `buildozer.spec` usa `p4a.branch = develop` no toolchain validado.
 
 Os builds incrementais reutilizam o cache do toolchain; o Gradle do RC branded concluiu com `BUILD SUCCESSFUL` em cerca de 10 segundos.
 
-## Pendência de gate
+## RC com QA física — atual
 
-O APK ainda precisa de QA em aparelho Android real: instalação, abertura, login, CRUD completo, persistência após reiniciar o aplicativo, teclado/botão voltar e logout. O roteiro detalhado está em `docs/RELEASE_CHECKLIST.md`.
+- Commit do código: `ee5216b`
+- Tag: `android-qa-pass-0.1.0`
+- Testes automatizados: 29/29 PASS
+- Build Android: PASS
+- Dispositivo: POCO C75 / modelo `2410FPCC5G`
+- Android: 16
+- ABI: arm64-v8a
+- Arquivo preservado no projeto: `dist/ClassBase-0.1.0-qa-pass-debug.apk`
+- Cópia usada na instalação: `C:\\Users\\User\\Downloads\\ClassBase-0.1.0-scrollfix-debug.apk`
+- Tamanho: 23.310.834 bytes
+- Assinatura: APK Signature Scheme v2 válida
+- SHA-256: `6F412FD90FC1C29E1EE3E71EB3633676C5EDBE83C514593D8D8E84E0E43BBB45`
+
+### QA física confirmada
+
+- instalação e atualização do APK;
+- abertura, presplash e tela de login;
+- login válido e logout limpando os campos;
+- cadastro, listagem, contador e pesquisa por RM/nome/curso;
+- bloqueio de RM duplicado no cadastro e na edição;
+- edição com salvamento enquanto o teclado está aberto;
+- cancelamento e confirmação de exclusão;
+- persistência SQLite após fechar/reabrir o app;
+- persistência após atualização do APK;
+- cartões mobile sem corte;
+- formulários roláveis e botões acessíveis com teclado virtual;
+- mensagem de cadastro concluído exibida em verde.
+
+Os registros criados apenas para QA foram removidos ao final, deixando a tabela `alunos` vazia.
+
+### Cobertura restante
+
+Alguns casos de borda continuam cobertos por testes automatizados, mas não foram repetidos manualmente no aparelho nesta rodada, como login inválido, todos os campos obrigatórios vazios em sequência e stress de lista longa. Para a demonstração escolar, o gate crítico Android está aprovado.
 
 Os APKs são artefatos de build e não devem ser versionados no Git.
