@@ -16,7 +16,7 @@ from screens import (
 
 BASE_DIR = Path(__file__).resolve().parent
 KV_DIR = BASE_DIR / "kv"
-KV_FILES = ("login.kv", "home.kv", "cadastro.kv", "alunos.kv", "editar.kv")
+KV_FILES = ("theme.kv", "login.kv", "home.kv", "cadastro.kv", "alunos.kv", "editar.kv")
 _kv_loaded = False
 
 

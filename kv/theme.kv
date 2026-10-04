@@ -1,0 +1,67 @@
+#:kivy 2.3.1
+
+<PrimaryButton@Button>:
+    background_normal: ""
+    background_down: ""
+    background_color: (0.10, 0.38, 0.86, 1) if self.state == "normal" else (0.07, 0.30, 0.72, 1)
+    color: (1, 1, 1, 1)
+    font_size: "16sp"
+    bold: True
+    size_hint_y: None
+    height: "52dp"
+
+<SecondaryButton@Button>:
+    background_normal: ""
+    background_down: ""
+    background_color: (0.91, 0.94, 0.99, 1) if self.state == "normal" else (0.84, 0.89, 0.97, 1)
+    color: (0.09, 0.28, 0.58, 1)
+    font_size: "16sp"
+    size_hint_y: None
+    height: "52dp"
+
+<DangerButton@Button>:
+    background_normal: ""
+    background_down: ""
+    background_color: (0.88, 0.24, 0.27, 1) if self.state == "normal" else (0.72, 0.18, 0.20, 1)
+    color: (1, 1, 1, 1)
+    size_hint_y: None
+    height: "44dp"
+
+<AppTextInput@TextInput>:
+    multiline: False
+    size_hint_y: None
+    height: "52dp"
+    padding: ("14dp", "14dp")
+    font_size: "16sp"
+    background_normal: ""
+    background_active: ""
+    background_color: (0.96, 0.97, 0.99, 1)
+    foreground_color: (0.10, 0.14, 0.20, 1)
+    hint_text_color: (0.44, 0.49, 0.57, 1)
+    cursor_color: (0.10, 0.38, 0.86, 1)
+
+<ScreenTitle@Label>:
+    color: (0.07, 0.11, 0.18, 1)
+    font_size: "28sp"
+    bold: True
+    halign: "left"
+    valign: "middle"
+    text_size: self.size
+    size_hint_y: None
+    height: "44dp"
+
+<MutedLabel@Label>:
+    color: (0.39, 0.44, 0.52, 1)
+    font_size: "14sp"
+    halign: "left"
+    valign: "middle"
+    text_size: self.size
+
+<FeedbackLabel@Label>:
+    color: (0.75, 0.18, 0.22, 1)
+    font_size: "14sp"
+    halign: "left"
+    valign: "middle"
+    text_size: self.size
+    size_hint_y: None
+    height: "36dp"

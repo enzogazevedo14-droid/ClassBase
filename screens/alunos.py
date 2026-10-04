@@ -1,3 +1,4 @@
+from kivy.graphics import Color, RoundedRectangle
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
 from kivy.uix.label import Label
@@ -21,8 +22,9 @@ class StudentListScreen(Screen):
             container.add_widget(
                 Label(
                     text="Nenhum aluno encontrado.",
+                    color=(0.40, 0.45, 0.52, 1),
                     size_hint_y=None,
-                    height="56dp",
+                    height="64dp",
                 )
             )
             return []
@@ -31,27 +33,57 @@ class StudentListScreen(Screen):
             row = BoxLayout(
                 orientation="horizontal",
                 size_hint_y=None,
-                height="76dp",
+                height="84dp",
                 spacing=8,
+                padding=(12, 8),
             )
-            row.add_widget(
-                Label(
-                    text=(
-                        f"{student['nome']}\n"
-                        f"RM: {student['rm']} | {student['curso']}"
-                    ),
-                    halign="left",
-                    valign="middle",
+            with row.canvas.before:
+                Color(1, 1, 1, 1)
+                background = RoundedRectangle(
+                    pos=row.pos,
+                    size=row.size,
+                    radius=[12],
                 )
+            row.bind(
+                pos=lambda instance, value, shape=background: setattr(shape, "pos", value),
+                size=lambda instance, value, shape=background: setattr(shape, "size", value),
             )
 
-            edit_button = Button(text="Editar", size_hint_x=None, width="88dp")
+            student_label = Label(
+                text=(
+                    f"{student['nome']}\n"
+                    f"RM: {student['rm']} | {student['curso']}"
+                ),
+                color=(0.10, 0.14, 0.20, 1),
+                halign="left",
+                valign="middle",
+            )
+            student_label.bind(
+                size=lambda instance, value: setattr(instance, "text_size", value)
+            )
+            row.add_widget(student_label)
+
+            edit_button = Button(
+                text="Editar",
+                size_hint_x=None,
+                width="76dp",
+                background_normal="",
+                background_color=(0.90, 0.94, 1, 1),
+                color=(0.08, 0.27, 0.55, 1),
+            )
             edit_button.bind(
                 on_release=lambda _, sid=student["id"]: self.open_edit(sid)
             )
             row.add_widget(edit_button)
 
-            delete_button = Button(text="Excluir", size_hint_x=None, width="88dp")
+            delete_button = Button(
+                text="Excluir",
+                size_hint_x=None,
+                width="76dp",
+                background_normal="",
+                background_color=(0.88, 0.25, 0.28, 1),
+                color=(1, 1, 1, 1),
+            )
             delete_button.bind(
                 on_release=lambda _, sid=student["id"], name=student["nome"]:
                     self.request_delete(sid, name)

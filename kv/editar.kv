@@ -1,50 +1,55 @@
 #:import COURSES screens.cadastro.COURSES
 
 <EditStudentScreen>:
+    canvas.before:
+        Color:
+            rgba: (0.95, 0.97, 1, 1)
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
     BoxLayout:
         orientation: "vertical"
-        padding: 32
-        spacing: 12
+        padding: "24dp"
+        spacing: "12dp"
 
-        Label:
+        ScreenTitle:
             text: "Editar aluno"
-            font_size: "24sp"
 
-        TextInput:
+        MutedLabel:
+            text: "Atualize os dados do cadastro."
+            size_hint_y: None
+            height: "30dp"
+
+        AppTextInput:
             id: rm_input
             hint_text: "RM"
-            multiline: False
-            size_hint_y: None
-            height: "48dp"
 
-        TextInput:
+        AppTextInput:
             id: name_input
-            hint_text: "Nome"
-            multiline: False
-            size_hint_y: None
-            height: "48dp"
+            hint_text: "Nome completo"
 
         Spinner:
             id: course_input
             text: "Selecione o curso"
             values: COURSES
             size_hint_y: None
-            height: "48dp"
+            height: "52dp"
+            background_normal: ""
+            background_color: (0.96, 0.97, 0.99, 1)
+            color: (0.10, 0.14, 0.20, 1)
+            font_size: "16sp"
 
-        Label:
+        FeedbackLabel:
             id: feedback
             text: ""
-            size_hint_y: None
-            height: "40dp"
 
-        Button:
+        Widget:
+
+        PrimaryButton:
             text: "Salvar alterações"
-            size_hint_y: None
-            height: "48dp"
             on_release: root.save_student()
 
-        Button:
+        SecondaryButton:
             text: "Cancelar"
-            size_hint_y: None
-            height: "48dp"
             on_release: root.manager.current = "alunos"

@@ -1,35 +1,35 @@
 <StudentListScreen>:
+    canvas.before:
+        Color:
+            rgba: (0.95, 0.97, 1, 1)
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
     BoxLayout:
         orientation: "vertical"
-        padding: 24
-        spacing: 12
+        padding: "20dp"
+        spacing: "12dp"
 
-        Label:
+        ScreenTitle:
             text: "Alunos"
-            font_size: "24sp"
-            size_hint_y: None
-            height: "52dp"
 
-        TextInput:
+        AppTextInput:
             id: search_input
             hint_text: "Pesquisar por RM, nome ou curso"
-            multiline: False
-            size_hint_y: None
-            height: "48dp"
             on_text: root.refresh_students(self.text)
 
         ScrollView:
             do_scroll_x: False
+            bar_width: "6dp"
 
             BoxLayout:
                 id: student_list
                 orientation: "vertical"
                 size_hint_y: None
                 height: self.minimum_height
-                spacing: 8
+                spacing: "10dp"
 
-        Button:
+        SecondaryButton:
             text: "Voltar"
-            size_hint_y: None
-            height: "48dp"
             on_release: root.manager.current = "home"

@@ -1,37 +1,52 @@
 <LoginScreen>:
-    BoxLayout:
-        orientation: "vertical"
-        padding: 32
-        spacing: 16
+    canvas.before:
+        Color:
+            rgba: (0.95, 0.97, 1, 1)
+        Rectangle:
+            pos: self.pos
+            size: self.size
 
-        Label:
-            text: "ClassBase"
-            font_size: "32sp"
+    AnchorLayout:
+        anchor_x: "center"
+        anchor_y: "center"
 
-        TextInput:
-            id: username_input
-            hint_text: "Usuário"
-            multiline: False
-            size_hint_y: None
-            height: "48dp"
+        BoxLayout:
+            orientation: "vertical"
+            size_hint: (0.88, None)
+            height: "410dp"
+            padding: "24dp"
+            spacing: "14dp"
 
-        TextInput:
-            id: password_input
-            hint_text: "Senha"
-            password: True
-            multiline: False
-            size_hint_y: None
-            height: "48dp"
-            on_text_validate: root.login()
+            ScreenTitle:
+                text: "ClassBase"
+                halign: "center"
 
-        Label:
-            id: feedback
-            text: ""
-            size_hint_y: None
-            height: "40dp"
+            MutedLabel:
+                text: "Gerenciamento de alunos"
+                halign: "center"
+                size_hint_y: None
+                height: "30dp"
 
-        Button:
-            text: "Entrar"
-            size_hint_y: None
-            height: "48dp"
-            on_release: root.login()
+            AppTextInput:
+                id: username_input
+                hint_text: "Usuário"
+
+            AppTextInput:
+                id: password_input
+                hint_text: "Senha"
+                password: True
+                on_text_validate: root.login()
+
+            FeedbackLabel:
+                id: feedback
+                text: ""
+
+            PrimaryButton:
+                text: "Entrar"
+                on_release: root.login()
+
+            MutedLabel:
+                text: "Acesso local e offline"
+                halign: "center"
+                size_hint_y: None
+                height: "28dp"
