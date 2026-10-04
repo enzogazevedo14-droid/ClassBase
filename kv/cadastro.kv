@@ -8,46 +8,52 @@
             pos: self.pos
             size: self.size
 
-    BoxLayout:
-        orientation: "vertical"
-        padding: "24dp"
-        spacing: "12dp"
+    ScrollView:
+        do_scroll_x: False
+        bar_width: "6dp"
 
-        ScreenTitle:
-            text: "Cadastrar aluno"
-
-        MutedLabel:
-            text: "Preencha os dados do novo aluno."
+        BoxLayout:
+            orientation: "vertical"
             size_hint_y: None
-            height: "30dp"
+            height: self.minimum_height
+            padding: "24dp"
+            spacing: "12dp"
 
-        AppTextInput:
-            id: rm_input
-            hint_text: "RM"
+            ScreenTitle:
+                text: "Cadastrar aluno"
 
-        AppTextInput:
-            id: name_input
-            hint_text: "Nome completo"
+            MutedLabel:
+                text: "Preencha os dados do novo aluno."
+                size_hint_y: None
+                height: "30dp"
 
-        Spinner:
-            id: course_input
-            text: "Selecione o curso"
-            values: COURSES
-            size_hint_y: None
-            height: "52dp"
-            background_normal: ""
-            background_color: (0.96, 0.97, 0.99, 1)
-            color: (0.10, 0.14, 0.20, 1)
-            font_size: "16sp"
+            AppTextInput:
+                id: rm_input
+                hint_text: "RM"
 
-        FeedbackLabel:
-            id: feedback
-            text: ""
+            AppTextInput:
+                id: name_input
+                hint_text: "Nome completo"
 
-        PrimaryButton:
-            text: "Cadastrar"
-            on_release: root.register_student()
+            Spinner:
+                id: course_input
+                text: "Selecione o curso"
+                values: COURSES
+                size_hint_y: None
+                height: "52dp"
+                background_normal: ""
+                background_color: (0.96, 0.97, 0.99, 1)
+                color: (0.10, 0.14, 0.20, 1)
+                font_size: "16sp"
 
-        SecondaryButton:
-            text: "Voltar"
-            on_release: root.manager.current = "home"
+            FeedbackLabel:
+                id: feedback
+                text: ""
+
+            PrimaryButton:
+                text: "Cadastrar"
+                on_release: root.register_student()
+
+            SecondaryButton:
+                text: "Voltar"
+                on_release: root.manager.current = "home"
