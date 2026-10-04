@@ -62,3 +62,16 @@ Essa credencial é apenas para desenvolvimento/apresentação e pode ser alterad
 ```
 
 O banco de produção é salvo no diretório de dados do usuário da aplicação, compatível com armazenamento gravável no Android.
+
+
+## Documentação acadêmica e apresentação
+
+- [Relatório acadêmico base](docs/RELATORIO_ACADEMICO.md)
+- [Arquitetura](docs/ARQUITETURA.md)
+- [Roteiro da apresentação](docs/APRESENTACAO.md)
+- [Roteiro de demonstração](docs/ROTEIRO_DEMO.md)
+- [Perguntas para defesa](docs/PERGUNTAS_DEFESA.md)
+- [Build Android](docs/ANDROID_BUILD.md)
+- [Checklist de QA física](docs/RELEASE_CHECKLIST.md)
+
+A documentação acadêmica já está estruturada para a apresentação do grupo. Antes da entrega final, faltam apenas preencher os nomes dos outros integrantes e o nome do(a) professor(a).
