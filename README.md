@@ -29,7 +29,7 @@ Aplicativo mobile para gerenciamento de alunos desenvolvido em Python com Kivy e
 - Login local com senha protegida por PBKDF2-HMAC + salt
 - Banco salvo no diretório gravável da aplicação
 - 25 testes automatizados passando
-- Build APK: próximo gate
+- Build APK debug arm64-v8a: PASS (04/10/2026)
 
 ## Conta de demonstração
 
