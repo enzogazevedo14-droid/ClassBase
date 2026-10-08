@@ -133,6 +133,31 @@ class DatabaseMigrationTests(unittest.TestCase):
         self.assertNotIn("curso", columns)
         self.assertEqual(version, 2)
 
+    def test_migration_keeps_autoincrement_sequence_working(self):
+        self._create_v1_database()
+        student_repo = StudentRepository(self.db_path)
+        course_repo = CourseRepository(self.db_path)
+        course_repo.create_course("Novo curso")
+
+        new_id = student_repo.create_student(
+            "900002",
+            "Novo aluno",
+            "Novo curso",
+        )
+
+        self.assertGreater(new_id, 1)
+        self.assertEqual(student_repo.get_student(new_id)["rm"], "900002")
+
+    def test_migration_is_idempotent(self):
+        self._create_v1_database()
+
+        first = StudentRepository(self.db_path)
+        second = StudentRepository(self.db_path)
+
+        self.assertEqual(first.count_students(), 1)
+        self.assertEqual(second.count_students(), 1)
+        self.assertEqual(second.list_students()[0]["curso"], "Curso legado")
+
 
 if __name__ == "__main__":
     unittest.main()

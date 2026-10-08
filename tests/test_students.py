@@ -2,7 +2,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from database import StudentRepository
+from database import CourseRepository, StudentRepository
 
 
 class StudentRepositoryTests(unittest.TestCase):
@@ -10,6 +10,7 @@ class StudentRepositoryTests(unittest.TestCase):
         self.temp_dir = tempfile.TemporaryDirectory()
         self.db_path = Path(self.temp_dir.name) / "test.db"
         self.repo = StudentRepository(self.db_path)
+        self.course_repo = CourseRepository(self.db_path)
 
     def tearDown(self):
         self.temp_dir.cleanup()
@@ -44,6 +45,17 @@ class StudentRepositoryTests(unittest.TestCase):
     def test_unknown_course_is_rejected(self):
         with self.assertRaisesRegex(ValueError, "Curso não encontrado"):
             self.repo.create_student("123", "Ana", "Curso inexistente")
+
+    def test_inactive_course_is_rejected_for_new_student(self):
+        course = next(
+            c
+            for c in self.course_repo.list_courses()
+            if c["nome"] == "Administração"
+        )
+        self.course_repo.set_course_active(course["id"], False)
+
+        with self.assertRaisesRegex(ValueError, "Curso não encontrado"):
+            self.repo.create_student("123", "Ana", "Administração")
 
     def test_values_are_trimmed(self):
         student_id = self.repo.create_student(
@@ -85,6 +97,48 @@ class StudentRepositoryTests(unittest.TestCase):
         self.assertEqual(student["rm"], "124")
         self.assertEqual(student["nome"], "Ana Souza")
         self.assertEqual(student["curso"], "Administração")
+
+    def test_student_can_be_edited_while_current_course_is_inactive(self):
+        course = next(
+            c
+            for c in self.course_repo.list_courses()
+            if c["nome"] == "Administração"
+        )
+        student_id = self.repo.create_student("123", "Ana", "Administração")
+        self.course_repo.set_course_active(course["id"], False)
+
+        self.assertTrue(
+            self.repo.update_student(
+                student_id,
+                "124",
+                "Ana Atualizada",
+                "Administração",
+            )
+        )
+
+        student = self.repo.get_student(student_id)
+        self.assertEqual(student["rm"], "124")
+        self.assertEqual(student["nome"], "Ana Atualizada")
+        self.assertEqual(student["curso"], "Administração")
+
+    def test_student_cannot_be_moved_to_different_inactive_course(self):
+        inactive = next(
+            c
+            for c in self.course_repo.list_courses()
+            if c["nome"] == "Administração"
+        )
+        student_id = self.repo.create_student(
+            "123", "Ana", "Desenvolvimento de Sistemas"
+        )
+        self.course_repo.set_course_active(inactive["id"], False)
+
+        with self.assertRaisesRegex(ValueError, "Curso não encontrado"):
+            self.repo.update_student(
+                student_id,
+                "123",
+                "Ana",
+                "Administração",
+            )
 
     def test_update_rejects_duplicate_rm(self):
         first_id = self.repo.create_student("100", "Ana", "Administração")

@@ -24,26 +24,28 @@ class StudentRepository:
         )
 
     @staticmethod
-    def _find_course_id(connection, course_name):
-        row = connection.execute(
+    def _find_course(connection, course_name):
+        return connection.execute(
             """
-            SELECT id
+            SELECT id, nome, ativo
             FROM cursos
             WHERE nome = ? COLLATE NOCASE
-              AND ativo = 1
             """,
             (course_name,),
         ).fetchone()
 
-        if row is None:
+    @classmethod
+    def _find_active_course_id(cls, connection, course_name):
+        course = cls._find_course(connection, course_name)
+        if course is None or not course["ativo"]:
             raise ValueError("Curso não encontrado ou inativo.")
-        return row["id"]
+        return course["id"]
 
     def create_student(self, rm, nome, curso):
         rm, nome, curso = self._student_data(rm, nome, curso)
         try:
             with connect(self.db_path) as connection:
-                course_id = self._find_course_id(connection, curso)
+                course_id = self._find_active_course_id(connection, curso)
                 cursor = connection.execute(
                     """
                     INSERT INTO alunos (rm, nome, curso_id)
@@ -101,16 +103,34 @@ class StudentRepository:
 
     def update_student(self, student_id, rm, nome, curso):
         rm, nome, curso = self._student_data(rm, nome, curso)
+
         try:
             with connect(self.db_path) as connection:
-                course_id = self._find_course_id(connection, curso)
+                current = connection.execute(
+                    "SELECT curso_id FROM alunos WHERE id = ?",
+                    (student_id,),
+                ).fetchone()
+
+                if current is None:
+                    return False
+
+                selected_course = self._find_course(connection, curso)
+                if selected_course is None:
+                    raise ValueError("Curso não encontrado ou inativo.")
+
+                if (
+                    not selected_course["ativo"]
+                    and selected_course["id"] != current["curso_id"]
+                ):
+                    raise ValueError("Curso não encontrado ou inativo.")
+
                 cursor = connection.execute(
                     """
                     UPDATE alunos
                     SET rm = ?, nome = ?, curso_id = ?
                     WHERE id = ?
                     """,
-                    (rm, nome, course_id, student_id),
+                    (rm, nome, selected_course["id"], student_id),
                 )
                 return cursor.rowcount == 1
         except sqlite3.IntegrityError as exc:

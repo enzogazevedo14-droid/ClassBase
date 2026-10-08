@@ -164,17 +164,17 @@ Existe teste automatizado específico verificando que um aluno da versão 1.0 co
 
 ## Perguntas prováveis
 
-**Por que usar chave estrangeira?**  
+**Por que usar chave estrangeira?**
 Para representar e proteger o relacionamento entre aluno e curso.
 
-**Por que não salvar apenas o ID e nunca fazer JOIN?**  
+**Por que não salvar apenas o ID e nunca fazer JOIN?**
 O ID é adequado para relacionamento interno, mas a interface precisa mostrar o nome. O JOIN recupera os dois dados relacionados.
 
-**Por que não excluir um curso com alunos?**  
+**Por que não excluir um curso com alunos?**
 Isso deixaria alunos apontando para um curso inexistente. A integridade referencial impede esse estado inválido.
 
-**Por que desativar curso?**  
+**Por que desativar curso?**
 Para impedir novos vínculos sem apagar o histórico de alunos que já pertenciam ao curso.
 
-**A versão antiga perde dados?**  
+**A versão antiga perde dados?**
 Não. A migração automática foi criada e testada especificamente para preservar os registros.
