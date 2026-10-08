@@ -164,17 +164,17 @@ Home
 
 ## Perguntas rápidas
 
-**Quem troca as telas?**  
+**Quem troca as telas?**
 `ScreenManager`.
 
-**Quem acessa SQLite?**  
+**Quem acessa SQLite?**
 Os Repositories.
 
-**Quem define os botões/campos?**  
+**Quem define os botões/campos?**
 Arquivos KV.
 
-**Quem responde aos botões?**  
+**Quem responde aos botões?**
 Classes Python das telas.
 
-**Quem cria os cards variáveis?**  
+**Quem cria os cards variáveis?**
 Python, porque a quantidade depende dos registros do banco.
