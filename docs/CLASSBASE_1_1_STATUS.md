@@ -91,7 +91,7 @@ A 1.1 não será instalada sobre a versão 1.0 neste primeiro teste.
 O APK de desenvolvimento utilizará outro package ID:
 
 ```text
-org.classbase.classbase11dev
+org.classbase.dev.classbase
 ```
 
 Título:
@@ -114,6 +114,31 @@ ClassBase 1.1 DEV
 ```
 
 com bancos separados no Android.
+
+## APK DEV gerado
+
+Build Android isolado concluído com sucesso em 08/10/2026.
+
+- Título: `ClassBase 1.1 DEV`
+- Versão: `0.2.0`
+- Package Android: `org.classbase.dev.classbase`
+- ABI: `arm64-v8a`
+- minSdk: 24
+- targetSdk: 33
+- Arquivo no Windows: `C:\\Users\\User\\Downloads\\ClassBase-1.1-DEV-0.2.0-debug.apk`
+- Cópia preservada: `dist/ClassBase-1.1-DEV-0.2.0-debug.apk`
+- Tamanho: 23.327.990 bytes
+- SHA-256: `86B72DB787E7ECEDC222A5E7981CF0003AAD46AC0DAA11C011E228EDDC35F490`
+- APK Signature Scheme v2: PASS
+- Buildozer/Gradle: PASS
+
+A configuração usada para gerar o APK DEV foi aplicada apenas na cópia de build do WSL. O `buildozer.spec` foi restaurado depois do build e o repositório WSL voltou a ficar limpo.
+
+## Estado da QA física
+
+Pendente. No momento da geração do APK, o ADB não encontrou nenhum dispositivo conectado.
+
+A versão 1.0 permanece intacta. Quando o celular estiver conectado, o DEV pode ser instalado como aplicativo separado, pois utiliza outro package ID.
 
 ## Gate para promover a 1.1
 
