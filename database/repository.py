@@ -3,6 +3,13 @@ import sqlite3
 from .connection import DEFAULT_DB_PATH, connect, initialize_database, utc_now
 
 
+ORDER_BY = {
+    "nome": "a.nome COLLATE NOCASE ASC, a.id ASC",
+    "rm": "a.rm COLLATE NOCASE ASC, a.id ASC",
+    "recentes": "a.created_at DESC, a.id DESC",
+}
+
+
 class StudentRepository:
     def __init__(self, db_path=DEFAULT_DB_PATH):
         self.db_path = db_path
@@ -81,10 +88,30 @@ class StudentRepository:
             ).fetchone()
         return dict(row) if row else None
 
-    def list_students(self, search=""):
+    def list_students(self, search="", course="", order_by="nome"):
         term = str(search).strip()
+        course = str(course).strip()
+        order_clause = ORDER_BY.get(order_by, ORDER_BY["nome"])
 
-        base_query = """
+        conditions = []
+        params = []
+
+        if term:
+            pattern = f"%{term}%"
+            conditions.append(
+                "(a.rm LIKE ? OR a.nome LIKE ? OR c.nome LIKE ?)"
+            )
+            params.extend((pattern, pattern, pattern))
+
+        if course:
+            conditions.append("c.nome = ? COLLATE NOCASE")
+            params.append(course)
+
+        where_clause = ""
+        if conditions:
+            where_clause = "WHERE " + " AND ".join(conditions)
+
+        query = f"""
             SELECT
                 a.id,
                 a.rm,
@@ -95,28 +122,13 @@ class StudentRepository:
                 a.updated_at
             FROM alunos AS a
             JOIN cursos AS c ON c.id = a.curso_id
+            {where_clause}
+            ORDER BY {order_clause}
         """
 
         with connect(self.db_path) as connection:
-            if term:
-                pattern = f"%{term}%"
-                rows = connection.execute(
-                    base_query
-                    + """
-                    WHERE a.rm LIKE ?
-                       OR a.nome LIKE ?
-                       OR c.nome LIKE ?
-                    ORDER BY a.nome COLLATE NOCASE, a.id
-                    """,
-                    (pattern, pattern, pattern),
-                ).fetchall()
-            else:
-                rows = connection.execute(
-                    base_query
-                    + """
-                    ORDER BY a.nome COLLATE NOCASE, a.id
-                    """
-                ).fetchall()
+            rows = connection.execute(query, tuple(params)).fetchall()
+
         return [dict(row) for row in rows]
 
     def update_student(self, student_id, rm, nome, curso):

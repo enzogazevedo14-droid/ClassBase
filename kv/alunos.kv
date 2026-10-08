@@ -9,7 +9,7 @@
     BoxLayout:
         orientation: "vertical"
         padding: "20dp"
-        spacing: "12dp"
+        spacing: "10dp"
 
         ScreenTitle:
             text: "Alunos"
@@ -18,6 +18,37 @@
             id: search_input
             hint_text: "Pesquisar por RM, nome ou curso"
             on_text: root.refresh_students(self.text)
+
+        BoxLayout:
+            size_hint_y: None
+            height: "52dp"
+            spacing: "8dp"
+
+            Spinner:
+                id: course_filter
+                text: "Todos os cursos"
+                values: ("Todos os cursos",)
+                background_normal: ""
+                background_color: (0.96, 0.97, 0.99, 1)
+                color: (0.10, 0.14, 0.20, 1)
+                font_size: "14sp"
+                on_text: root.refresh_students()
+
+            Spinner:
+                id: order_filter
+                text: "Nome A-Z"
+                values: ("Nome A-Z", "RM", "Mais recentes")
+                background_normal: ""
+                background_color: (0.96, 0.97, 0.99, 1)
+                color: (0.10, 0.14, 0.20, 1)
+                font_size: "14sp"
+                on_text: root.refresh_students()
+
+        MutedLabel:
+            id: result_count
+            text: "0 alunos encontrados"
+            size_hint_y: None
+            height: "26dp"
 
         ScrollView:
             do_scroll_x: False

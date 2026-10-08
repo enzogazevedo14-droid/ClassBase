@@ -9,7 +9,7 @@
     BoxLayout:
         orientation: "vertical"
         padding: "24dp"
-        spacing: "14dp"
+        spacing: "12dp"
 
         ScreenTitle:
             text: "ClassBase"
@@ -22,9 +22,9 @@
         BoxLayout:
             orientation: "vertical"
             size_hint_y: None
-            height: "128dp"
-            padding: "18dp"
-            spacing: "4dp"
+            height: "112dp"
+            padding: "16dp"
+            spacing: "2dp"
             canvas.before:
                 Color:
                     rgba: (1, 1, 1, 1)
@@ -36,16 +36,44 @@
             MutedLabel:
                 text: "Alunos cadastrados"
                 size_hint_y: None
-                height: "28dp"
+                height: "26dp"
 
             Label:
                 id: student_count
                 text: "0"
                 color: (0.10, 0.38, 0.86, 1)
-                font_size: "38sp"
+                font_size: "36sp"
                 bold: True
                 halign: "left"
                 valign: "middle"
+                text_size: self.size
+
+        BoxLayout:
+            orientation: "vertical"
+            size_hint_y: None
+            height: "154dp"
+            padding: "16dp"
+            spacing: "4dp"
+            canvas.before:
+                Color:
+                    rgba: (1, 1, 1, 1)
+                RoundedRectangle:
+                    pos: self.pos
+                    size: self.size
+                    radius: [16]
+
+            MutedLabel:
+                text: "Distribuição por curso"
+                size_hint_y: None
+                height: "26dp"
+
+            Label:
+                id: course_summary
+                text: "Nenhum aluno distribuído por curso."
+                color: (0.10, 0.14, 0.20, 1)
+                font_size: "13sp"
+                halign: "left"
+                valign: "top"
                 text_size: self.size
 
         Widget:

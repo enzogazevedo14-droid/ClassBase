@@ -6,15 +6,50 @@ from kivy.uix.popup import Popup
 from kivy.uix.screenmanager import Screen
 
 
+ALL_COURSES = "Todos os cursos"
+ORDER_OPTIONS = {
+    "Nome A-Z": "nome",
+    "RM": "rm",
+    "Mais recentes": "recentes",
+}
+
+
 class StudentListScreen(Screen):
     def on_pre_enter(self, *args):
+        self.refresh_filters()
         self.refresh_students()
+
+    def refresh_filters(self):
+        courses = self.manager.course_repository.list_courses(include_inactive=True)
+        values = (ALL_COURSES,) + tuple(course["nome"] for course in courses)
+        self.ids.course_filter.values = values
+
+        if self.ids.course_filter.text not in values:
+            self.ids.course_filter.text = ALL_COURSES
+
+        return values
 
     def refresh_students(self, search=None):
         if search is None:
             search = self.ids.search_input.text
 
-        students = self.manager.repository.list_students(search)
+        selected_course = self.ids.course_filter.text
+        course = "" if selected_course == ALL_COURSES else selected_course
+        order_by = ORDER_OPTIONS.get(self.ids.order_filter.text, "nome")
+
+        students = self.manager.repository.list_students(
+            search=search,
+            course=course,
+            order_by=order_by,
+        )
+
+        total = len(students)
+        self.ids.result_count.text = (
+            "1 aluno encontrado"
+            if total == 1
+            else f"{total} alunos encontrados"
+        )
+
         container = self.ids.student_list
         container.clear_widgets()
 

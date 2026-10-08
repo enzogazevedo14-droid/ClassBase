@@ -56,6 +56,27 @@ class CourseRepository:
                 ).fetchall()
         return [dict(row) for row in rows]
 
+    def list_student_counts(self, include_inactive=True):
+        condition = "" if include_inactive else "WHERE c.ativo = 1"
+
+        with connect(self.db_path) as connection:
+            rows = connection.execute(
+                f"""
+                SELECT
+                    c.id,
+                    c.nome,
+                    c.ativo,
+                    COUNT(a.id) AS total
+                FROM cursos AS c
+                LEFT JOIN alunos AS a ON a.curso_id = c.id
+                {condition}
+                GROUP BY c.id, c.nome, c.ativo
+                ORDER BY total DESC, c.nome COLLATE NOCASE, c.id
+                """
+            ).fetchall()
+
+        return [dict(row) for row in rows]
+
     def update_course(self, course_id, name):
         name = self._clean_name(name)
         try:
