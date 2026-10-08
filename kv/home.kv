@@ -6,94 +6,102 @@
             pos: self.pos
             size: self.size
 
-    BoxLayout:
-        orientation: "vertical"
-        padding: "24dp"
-        spacing: "10dp"
-
-        ScreenTitle:
-            text: "ClassBase"
-
-        MutedLabel:
-            text: "Gerenciamento de alunos"
-            size_hint_y: None
-            height: "28dp"
+    ScrollView:
+        do_scroll_x: False
+        bar_width: "6dp"
 
         BoxLayout:
             orientation: "vertical"
             size_hint_y: None
-            height: "104dp"
-            padding: "14dp"
-            spacing: "2dp"
-            canvas.before:
-                Color:
-                    rgba: (1, 1, 1, 1)
-                RoundedRectangle:
-                    pos: self.pos
-                    size: self.size
-                    radius: [16]
+            height: self.minimum_height
+            padding: "24dp"
+            spacing: "10dp"
+
+            ScreenTitle:
+                text: "ClassBase"
 
             MutedLabel:
-                text: "Alunos cadastrados"
+                text: "Gerenciamento de alunos"
                 size_hint_y: None
-                height: "24dp"
+                height: "28dp"
 
-            Label:
-                id: student_count
-                text: "0"
-                color: (0.10, 0.38, 0.86, 1)
-                font_size: "34sp"
-                bold: True
-                halign: "left"
-                valign: "middle"
-                text_size: self.size
-
-        BoxLayout:
-            orientation: "vertical"
-            size_hint_y: None
-            height: "144dp"
-            padding: "14dp"
-            spacing: "4dp"
-            canvas.before:
-                Color:
-                    rgba: (1, 1, 1, 1)
-                RoundedRectangle:
-                    pos: self.pos
-                    size: self.size
-                    radius: [16]
-
-            MutedLabel:
-                text: "Distribuição por curso"
+            BoxLayout:
+                orientation: "vertical"
                 size_hint_y: None
-                height: "24dp"
+                height: "104dp"
+                padding: "14dp"
+                spacing: "2dp"
+                canvas.before:
+                    Color:
+                        rgba: (1, 1, 1, 1)
+                    RoundedRectangle:
+                        pos: self.pos
+                        size: self.size
+                        radius: [16]
 
-            Label:
-                id: course_summary
-                text: "Nenhum aluno distribuído por curso."
-                color: (0.10, 0.14, 0.20, 1)
-                font_size: "13sp"
-                halign: "left"
-                valign: "top"
-                text_size: self.size
+                MutedLabel:
+                    text: "Alunos cadastrados"
+                    size_hint_y: None
+                    height: "24dp"
 
-        Widget:
+                Label:
+                    id: student_count
+                    text: "0"
+                    color: (0.10, 0.38, 0.86, 1)
+                    font_size: "34sp"
+                    bold: True
+                    halign: "left"
+                    valign: "middle"
+                    text_size: self.size
 
-        PrimaryButton:
-            text: "Cadastrar aluno"
-            on_release: root.manager.current = "cadastro"
+            BoxLayout:
+                orientation: "vertical"
+                size_hint_y: None
+                height: "144dp"
+                padding: "14dp"
+                spacing: "4dp"
+                canvas.before:
+                    Color:
+                        rgba: (1, 1, 1, 1)
+                    RoundedRectangle:
+                        pos: self.pos
+                        size: self.size
+                        radius: [16]
 
-        SecondaryButton:
-            text: "Consultar alunos"
-            on_release: root.manager.current = "alunos"
+                MutedLabel:
+                    text: "Distribuição por curso"
+                    size_hint_y: None
+                    height: "24dp"
 
-        SecondaryButton:
-            text: "Gerenciar cursos"
-            on_release: root.manager.current = "cursos"
+                Label:
+                    id: course_summary
+                    text: "Nenhum aluno distribuído por curso."
+                    color: (0.10, 0.14, 0.20, 1)
+                    font_size: "13sp"
+                    halign: "left"
+                    valign: "top"
+                    text_size: self.size
 
-        SecondaryButton:
-            text: "Histórico de ações"
-            on_release: root.manager.current = "historico"
+            Widget:
+                size_hint_y: None
+                height: "8dp"
 
-        SecondaryButton:
-            text: "Sair"
-            on_release: root.logout()
+            PrimaryButton:
+                text: "Cadastrar aluno"
+                on_release: root.manager.current = "cadastro"
+
+            SecondaryButton:
+                text: "Consultar alunos"
+                on_release: root.manager.current = "alunos"
+
+            SecondaryButton:
+                text: "Gerenciar cursos"
+                on_release: root.manager.current = "cursos"
+
+            SecondaryButton:
+                text: "Histórico de ações"
+                on_release: root.manager.current = "historico"
+
+            SecondaryButton:
+                text: "Sair"
+                on_release: root.logout()

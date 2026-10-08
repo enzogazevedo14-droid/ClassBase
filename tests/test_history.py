@@ -82,6 +82,28 @@ class HistoryRepositoryTests(unittest.TestCase):
 
         self.assertEqual(self.history.count_events(), before)
 
+    def test_saving_unchanged_student_does_not_touch_timestamp_or_history(self):
+        student_id = self.students.create_student(
+            "350",
+            "Sem Alteração",
+            "Administração",
+        )
+        before = self.students.get_student(student_id)
+        before_history = self.history.count_events()
+
+        self.assertTrue(
+            self.students.update_student(
+                student_id,
+                "350",
+                "Sem Alteração",
+                "Administração",
+            )
+        )
+
+        after = self.students.get_student(student_id)
+        self.assertEqual(after["updated_at"], before["updated_at"])
+        self.assertEqual(self.history.count_events(), before_history)
+
     def test_course_lifecycle_is_recorded(self):
         course_id = self.courses.create_course("Logística")
         self.courses.update_course(course_id, "Logística Integrada")
@@ -98,6 +120,14 @@ class HistoryRepositoryTests(unittest.TestCase):
         self.assertTrue(
             all(event["registro_id"] == course_id for event in events)
         )
+
+    def test_saving_unchanged_course_does_not_create_history(self):
+        course_id = self.courses.create_course("Curso Estável")
+        before_history = self.history.count_events()
+
+        self.assertTrue(self.courses.update_course(course_id, "Curso Estável"))
+
+        self.assertEqual(self.history.count_events(), before_history)
 
     def test_entity_filter_separates_student_and_course_events(self):
         self.courses.create_course("Mecatrônica")

@@ -61,7 +61,7 @@ class HistoryScreen(Screen):
             card = BoxLayout(
                 orientation="vertical",
                 size_hint_y=None,
-                height="112dp",
+                height="140dp",
                 padding=(12, 10),
                 spacing=4,
             )
@@ -111,7 +111,7 @@ class HistoryScreen(Screen):
                 halign="left",
                 valign="middle",
                 size_hint_y=None,
-                height="44dp",
+                height="72dp",
             )
             description.bind(
                 size=lambda instance, value: setattr(

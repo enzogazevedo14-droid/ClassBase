@@ -189,6 +189,13 @@ class StudentRepository:
                 ):
                     raise ValueError("Curso não encontrado ou inativo.")
 
+                if (
+                    current["rm"] == rm
+                    and current["nome"] == nome
+                    and current["curso_id"] == selected_course["id"]
+                ):
+                    return True
+
                 timestamp = utc_now()
                 cursor = connection.execute(
                     """

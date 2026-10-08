@@ -98,18 +98,18 @@ class CourseRepository:
                 if current is None:
                     return False
 
+                if current["nome"] == name:
+                    return True
+
                 cursor = connection.execute(
                     "UPDATE cursos SET nome = ? WHERE id = ?",
                     (name, course_id),
                 )
 
                 if cursor.rowcount == 1:
-                    if current["nome"] == name:
-                        description = f"Curso {name}: cadastro salvo sem alterações."
-                    else:
-                        description = (
-                            f"Curso renomeado: {current['nome']} → {name}."
-                        )
+                    description = (
+                        f"Curso renomeado: {current['nome']} → {name}."
+                    )
                     record_history(
                         connection,
                         "curso",

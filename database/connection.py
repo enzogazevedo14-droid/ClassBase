@@ -44,7 +44,21 @@ def _table_columns(connection, table_name):
     }
 
 
+def _table_exists(connection, table_name):
+    row = connection.execute(
+        """
+        SELECT 1
+        FROM sqlite_master
+        WHERE type = 'table' AND name = ?
+        """,
+        (table_name,),
+    ).fetchone()
+    return row is not None
+
+
 def _create_courses_table(connection):
+    table_already_existed = _table_exists(connection, "cursos")
+
     connection.execute(
         """
         CREATE TABLE IF NOT EXISTS cursos (
@@ -55,9 +69,12 @@ def _create_courses_table(connection):
         """
     )
 
+    if table_already_existed:
+        return
+
     for course_name in DEFAULT_COURSES:
         connection.execute(
-            "INSERT OR IGNORE INTO cursos (nome, ativo) VALUES (?, 1)",
+            "INSERT INTO cursos (nome, ativo) VALUES (?, 1)",
             (course_name,),
         )
 

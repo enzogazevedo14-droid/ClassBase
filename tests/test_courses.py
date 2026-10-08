@@ -65,6 +65,20 @@ class CourseRepositoryTests(unittest.TestCase):
         self.assertTrue(self.repo.delete_course(course_id))
         self.assertIsNone(self.repo.get_course(course_id))
 
+    def test_deleted_default_course_does_not_reappear_after_reopen(self):
+        default_course = next(
+            course
+            for course in self.repo.list_courses()
+            if course["nome"] == "Outros"
+        )
+
+        self.assertTrue(self.repo.delete_course(default_course["id"]))
+
+        reopened = CourseRepository(self.db_path)
+        names = [course["nome"] for course in reopened.list_courses(include_inactive=True)]
+
+        self.assertNotIn("Outros", names)
+
 
 class DatabaseMigrationTests(unittest.TestCase):
     def setUp(self):

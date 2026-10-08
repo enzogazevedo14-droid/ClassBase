@@ -1,4 +1,5 @@
 from kivy.graphics import Color, RoundedRectangle
+from kivy.metrics import dp
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
 from kivy.uix.label import Label
@@ -145,7 +146,8 @@ class CourseScreen(Screen):
         popup = Popup(
             title="Editar curso",
             content=content,
-            size_hint=(0.88, 0.38),
+            size_hint=(0.88, None),
+            height=dp(260),
             auto_dismiss=False,
         )
         cancel_button.bind(on_release=popup.dismiss)
