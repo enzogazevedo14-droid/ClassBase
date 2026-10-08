@@ -1,0 +1,125 @@
+<StudentDetailScreen>:
+    canvas.before:
+        Color:
+            rgba: (0.95, 0.97, 1, 1)
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    BoxLayout:
+        orientation: "vertical"
+        padding: "24dp"
+        spacing: "12dp"
+
+        ScreenTitle:
+            text: "Detalhes do aluno"
+
+        MutedLabel:
+            text: "Informações completas do cadastro."
+            size_hint_y: None
+            height: "30dp"
+
+        BoxLayout:
+            orientation: "vertical"
+            size_hint_y: None
+            height: "356dp"
+            padding: "18dp"
+            spacing: "6dp"
+            canvas.before:
+                Color:
+                    rgba: (1, 1, 1, 1)
+                RoundedRectangle:
+                    pos: self.pos
+                    size: self.size
+                    radius: [16]
+
+            MutedLabel:
+                text: "Nome"
+                size_hint_y: None
+                height: "24dp"
+
+            Label:
+                id: name_value
+                text: "-"
+                color: (0.08, 0.12, 0.19, 1)
+                font_size: "18sp"
+                bold: True
+                halign: "left"
+                valign: "middle"
+                text_size: self.size
+                size_hint_y: None
+                height: "38dp"
+
+            MutedLabel:
+                text: "RM"
+                size_hint_y: None
+                height: "24dp"
+
+            Label:
+                id: rm_value
+                text: "-"
+                color: (0.10, 0.14, 0.20, 1)
+                font_size: "16sp"
+                halign: "left"
+                valign: "middle"
+                text_size: self.size
+                size_hint_y: None
+                height: "34dp"
+
+            MutedLabel:
+                text: "Curso"
+                size_hint_y: None
+                height: "24dp"
+
+            Label:
+                id: course_value
+                text: "-"
+                color: (0.10, 0.14, 0.20, 1)
+                font_size: "16sp"
+                halign: "left"
+                valign: "middle"
+                text_size: self.size
+                size_hint_y: None
+                height: "48dp"
+
+            MutedLabel:
+                text: "Cadastrado em"
+                size_hint_y: None
+                height: "24dp"
+
+            Label:
+                id: created_value
+                text: "-"
+                color: (0.10, 0.14, 0.20, 1)
+                font_size: "15sp"
+                halign: "left"
+                valign: "middle"
+                text_size: self.size
+                size_hint_y: None
+                height: "32dp"
+
+            MutedLabel:
+                text: "Última atualização"
+                size_hint_y: None
+                height: "24dp"
+
+            Label:
+                id: updated_value
+                text: "-"
+                color: (0.10, 0.14, 0.20, 1)
+                font_size: "15sp"
+                halign: "left"
+                valign: "middle"
+                text_size: self.size
+                size_hint_y: None
+                height: "32dp"
+
+        Widget:
+
+        PrimaryButton:
+            text: "Editar aluno"
+            on_release: root.edit_student()
+
+        SecondaryButton:
+            text: "Voltar para alunos"
+            on_release: root.manager.current = "alunos"

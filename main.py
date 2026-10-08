@@ -12,6 +12,7 @@ from screens import (
     HomeScreen,
     LoginScreen,
     RegisterStudentScreen,
+    StudentDetailScreen,
     StudentListScreen,
 )
 
@@ -24,6 +25,7 @@ KV_FILES = (
     "home.kv",
     "cadastro.kv",
     "alunos.kv",
+    "detalhes.kv",
     "editar.kv",
     "cursos.kv",
 )
@@ -60,6 +62,7 @@ class ClassBaseApp(App):
         manager.add_widget(HomeScreen(name="home"))
         manager.add_widget(RegisterStudentScreen(name="cadastro"))
         manager.add_widget(StudentListScreen(name="alunos"))
+        manager.add_widget(StudentDetailScreen(name="detalhes"))
         manager.add_widget(EditStudentScreen(name="editar"))
         manager.add_widget(CourseScreen(name="cursos"))
         return manager

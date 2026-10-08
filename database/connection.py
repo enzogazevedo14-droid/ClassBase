@@ -1,5 +1,6 @@
 import sqlite3
 from contextlib import contextmanager
+from datetime import datetime, timezone
 from pathlib import Path
 
 
@@ -10,7 +11,11 @@ DEFAULT_COURSES = (
     "Recursos Humanos",
     "Outros",
 )
-SCHEMA_VERSION = 2
+SCHEMA_VERSION = 3
+
+
+def utc_now():
+    return datetime.now(timezone.utc).isoformat(timespec="microseconds")
 
 
 @contextmanager
@@ -65,6 +70,8 @@ def _create_students_table(connection, table_name="alunos"):
             rm TEXT NOT NULL UNIQUE,
             nome TEXT NOT NULL,
             curso_id INTEGER NOT NULL,
+            created_at TEXT NOT NULL,
+            updated_at TEXT NOT NULL,
             FOREIGN KEY (curso_id) REFERENCES cursos(id)
                 ON UPDATE CASCADE
                 ON DELETE RESTRICT
@@ -73,19 +80,7 @@ def _create_students_table(connection, table_name="alunos"):
     )
 
 
-def _migrate_students_to_courses(connection):
-    columns = _table_columns(connection, "alunos")
-
-    if not columns:
-        _create_students_table(connection)
-        return
-
-    if "curso_id" in columns:
-        return
-
-    if "curso" not in columns:
-        raise RuntimeError("Schema de alunos incompatível com a migração do ClassBase.")
-
+def _migrate_legacy_students(connection, columns):
     old_courses = connection.execute(
         """
         SELECT DISTINCT TRIM(curso) AS nome
@@ -100,21 +95,78 @@ def _migrate_students_to_courses(connection):
             (row["nome"],),
         )
 
-    connection.execute("DROP TABLE IF EXISTS alunos_v2")
-    _create_students_table(connection, "alunos_v2")
+    migrated_at = utc_now()
+    connection.execute("DROP TABLE IF EXISTS alunos_latest")
+    _create_students_table(connection, "alunos_latest")
 
     connection.execute(
         """
-        INSERT INTO alunos_v2 (id, rm, nome, curso_id)
-        SELECT a.id, a.rm, a.nome, c.id
+        INSERT INTO alunos_latest (
+            id, rm, nome, curso_id, created_at, updated_at
+        )
+        SELECT a.id, a.rm, a.nome, c.id, ?, ?
         FROM alunos AS a
         JOIN cursos AS c
           ON c.nome = TRIM(a.curso) COLLATE NOCASE
-        """
+        """,
+        (migrated_at, migrated_at),
     )
 
     connection.execute("DROP TABLE alunos")
-    connection.execute("ALTER TABLE alunos_v2 RENAME TO alunos")
+    connection.execute("ALTER TABLE alunos_latest RENAME TO alunos")
+
+
+def _migrate_relational_students_with_timestamps(connection, columns):
+    migrated_at = utc_now()
+    connection.execute("DROP TABLE IF EXISTS alunos_latest")
+    _create_students_table(connection, "alunos_latest")
+
+    created_expression = "a.created_at" if "created_at" in columns else "?"
+    updated_expression = "a.updated_at" if "updated_at" in columns else "?"
+
+    params = []
+    if "created_at" not in columns:
+        params.append(migrated_at)
+    if "updated_at" not in columns:
+        params.append(migrated_at)
+
+    connection.execute(
+        f"""
+        INSERT INTO alunos_latest (
+            id, rm, nome, curso_id, created_at, updated_at
+        )
+        SELECT
+            a.id,
+            a.rm,
+            a.nome,
+            a.curso_id,
+            {created_expression},
+            {updated_expression}
+        FROM alunos AS a
+        """,
+        tuple(params),
+    )
+
+    connection.execute("DROP TABLE alunos")
+    connection.execute("ALTER TABLE alunos_latest RENAME TO alunos")
+
+
+def _migrate_students_to_latest(connection):
+    columns = _table_columns(connection, "alunos")
+
+    if not columns:
+        _create_students_table(connection)
+        return
+
+    if "curso" in columns and "curso_id" not in columns:
+        _migrate_legacy_students(connection, columns)
+        return
+
+    if "curso_id" not in columns:
+        raise RuntimeError("Schema de alunos incompatível com a migração do ClassBase.")
+
+    if "created_at" not in columns or "updated_at" not in columns:
+        _migrate_relational_students_with_timestamps(connection, columns)
 
 
 def initialize_database(db_path=DEFAULT_DB_PATH):
@@ -131,5 +183,5 @@ def initialize_database(db_path=DEFAULT_DB_PATH):
         )
 
         _create_courses_table(connection)
-        _migrate_students_to_courses(connection)
+        _migrate_students_to_latest(connection)
         connection.execute(f"PRAGMA user_version = {SCHEMA_VERSION}")

@@ -1,4 +1,5 @@
 import tempfile
+import time
 import unittest
 from pathlib import Path
 
@@ -25,6 +26,9 @@ class StudentRepositoryTests(unittest.TestCase):
         self.assertEqual(student["nome"], "Ana Souza")
         self.assertEqual(student["curso"], "Desenvolvimento de Sistemas")
         self.assertIsInstance(student["curso_id"], int)
+        self.assertTrue(student["created_at"])
+        self.assertTrue(student["updated_at"])
+        self.assertEqual(student["created_at"], student["updated_at"])
 
     def test_rm_must_be_unique(self):
         self.repo.create_student("123", "Ana", "Desenvolvimento de Sistemas")
@@ -87,6 +91,8 @@ class StudentRepositoryTests(unittest.TestCase):
         student_id = self.repo.create_student(
             "123", "Ana", "Desenvolvimento de Sistemas"
         )
+        before = self.repo.get_student(student_id)
+        time.sleep(0.002)
 
         updated = self.repo.update_student(
             student_id, "124", "Ana Souza", "Administração"
@@ -97,6 +103,8 @@ class StudentRepositoryTests(unittest.TestCase):
         self.assertEqual(student["rm"], "124")
         self.assertEqual(student["nome"], "Ana Souza")
         self.assertEqual(student["curso"], "Administração")
+        self.assertEqual(student["created_at"], before["created_at"])
+        self.assertNotEqual(student["updated_at"], before["updated_at"])
 
     def test_student_can_be_edited_while_current_course_is_inactive(self):
         course = next(

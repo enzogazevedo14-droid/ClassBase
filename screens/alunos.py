@@ -33,7 +33,7 @@ class StudentListScreen(Screen):
             row = BoxLayout(
                 orientation="horizontal",
                 size_hint_y=None,
-                height="104dp",
+                height="136dp",
                 spacing=10,
                 padding=(12, 8),
             )
@@ -68,12 +68,25 @@ class StudentListScreen(Screen):
             actions = BoxLayout(
                 orientation="vertical",
                 size_hint_x=None,
-                width="76dp",
-                spacing=6,
+                width="86dp",
+                spacing=5,
             )
+
+            details_button = Button(
+                text="Detalhes",
+                font_size="13sp",
+                background_normal="",
+                background_color=(0.90, 0.94, 1, 1),
+                color=(0.08, 0.27, 0.55, 1),
+            )
+            details_button.bind(
+                on_release=lambda _, sid=student["id"]: self.open_detail(sid)
+            )
+            actions.add_widget(details_button)
 
             edit_button = Button(
                 text="Editar",
+                font_size="13sp",
                 background_normal="",
                 background_color=(0.90, 0.94, 1, 1),
                 color=(0.08, 0.27, 0.55, 1),
@@ -85,6 +98,7 @@ class StudentListScreen(Screen):
 
             delete_button = Button(
                 text="Excluir",
+                font_size="13sp",
                 background_normal="",
                 background_color=(0.88, 0.25, 0.28, 1),
                 color=(1, 1, 1, 1),
@@ -99,6 +113,14 @@ class StudentListScreen(Screen):
             container.add_widget(row)
 
         return students
+
+    def open_detail(self, student_id):
+        detail_screen = self.manager.get_screen("detalhes")
+        if not detail_screen.load_student(student_id):
+            return False
+
+        self.manager.current = "detalhes"
+        return True
 
     def open_edit(self, student_id):
         edit_screen = self.manager.get_screen("editar")

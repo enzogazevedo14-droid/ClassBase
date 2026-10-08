@@ -108,7 +108,56 @@ class DatabaseMigrationTests(unittest.TestCase):
         finally:
             connection.close()
 
-    def test_v1_student_data_is_preserved_in_v2_relationship(self):
+    def _create_v2_database(self):
+        connection = sqlite3.connect(self.db_path)
+        try:
+            connection.execute(
+                """
+                CREATE TABLE cursos (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    nome TEXT NOT NULL UNIQUE COLLATE NOCASE,
+                    ativo INTEGER NOT NULL DEFAULT 1
+                )
+                """
+            )
+            connection.execute(
+                """
+                CREATE TABLE alunos (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    rm TEXT NOT NULL UNIQUE,
+                    nome TEXT NOT NULL,
+                    curso_id INTEGER NOT NULL,
+                    FOREIGN KEY (curso_id) REFERENCES cursos(id)
+                )
+                """
+            )
+            connection.execute(
+                """
+                CREATE TABLE usuarios (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    usuario TEXT NOT NULL UNIQUE,
+                    salt BLOB NOT NULL,
+                    senha_hash BLOB NOT NULL
+                )
+                """
+            )
+            cursor = connection.execute(
+                "INSERT INTO cursos (nome, ativo) VALUES (?, 1)",
+                ("Curso V2",),
+            )
+            connection.execute(
+                """
+                INSERT INTO alunos (rm, nome, curso_id)
+                VALUES (?, ?, ?)
+                """,
+                ("910001", "Aluno V2", cursor.lastrowid),
+            )
+            connection.execute("PRAGMA user_version = 2")
+            connection.commit()
+        finally:
+            connection.close()
+
+    def test_v1_student_data_is_preserved_in_latest_schema(self):
         self._create_v1_database()
 
         student_repo = StudentRepository(self.db_path)
@@ -118,6 +167,8 @@ class DatabaseMigrationTests(unittest.TestCase):
         self.assertEqual(len(students), 1)
         self.assertEqual(students[0]["rm"], "900001")
         self.assertEqual(students[0]["curso"], "Curso legado")
+        self.assertTrue(students[0]["created_at"])
+        self.assertTrue(students[0]["updated_at"])
 
         courses = course_repo.list_courses(include_inactive=True)
         self.assertIn("Curso legado", [course["nome"] for course in courses])
@@ -130,8 +181,25 @@ class DatabaseMigrationTests(unittest.TestCase):
             version = connection.execute("PRAGMA user_version").fetchone()[0]
 
         self.assertIn("curso_id", columns)
+        self.assertIn("created_at", columns)
+        self.assertIn("updated_at", columns)
         self.assertNotIn("curso", columns)
-        self.assertEqual(version, 2)
+        self.assertEqual(version, 3)
+
+    def test_v2_relationship_is_preserved_when_timestamps_are_added(self):
+        self._create_v2_database()
+
+        student_repo = StudentRepository(self.db_path)
+        student = student_repo.list_students()[0]
+
+        self.assertEqual(student["rm"], "910001")
+        self.assertEqual(student["curso"], "Curso V2")
+        self.assertTrue(student["created_at"])
+        self.assertTrue(student["updated_at"])
+
+        with connect(self.db_path) as connection:
+            version = connection.execute("PRAGMA user_version").fetchone()[0]
+        self.assertEqual(version, 3)
 
     def test_migration_keeps_autoincrement_sequence_working(self):
         self._create_v1_database()
@@ -157,6 +225,7 @@ class DatabaseMigrationTests(unittest.TestCase):
         self.assertEqual(first.count_students(), 1)
         self.assertEqual(second.count_students(), 1)
         self.assertEqual(second.list_students()[0]["curso"], "Curso legado")
+        self.assertTrue(second.list_students()[0]["created_at"])
 
 
 if __name__ == "__main__":

@@ -10,7 +10,15 @@ class NavigationTests(unittest.TestCase):
 
         self.assertEqual(
             manager.screen_names,
-            ["login", "home", "cadastro", "alunos", "editar", "cursos"],
+            [
+                "login",
+                "home",
+                "cadastro",
+                "alunos",
+                "detalhes",
+                "editar",
+                "cursos",
+            ],
         )
         self.assertEqual(manager.current, "login")
 
@@ -22,6 +30,7 @@ class NavigationTests(unittest.TestCase):
             "home",
             "cadastro",
             "alunos",
+            "detalhes",
             "editar",
             "cursos",
             "login",

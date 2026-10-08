@@ -1,6 +1,6 @@
 import sqlite3
 
-from .connection import DEFAULT_DB_PATH, connect, initialize_database
+from .connection import DEFAULT_DB_PATH, connect, initialize_database, utc_now
 
 
 class StudentRepository:
@@ -43,15 +43,19 @@ class StudentRepository:
 
     def create_student(self, rm, nome, curso):
         rm, nome, curso = self._student_data(rm, nome, curso)
+        timestamp = utc_now()
+
         try:
             with connect(self.db_path) as connection:
                 course_id = self._find_active_course_id(connection, curso)
                 cursor = connection.execute(
                     """
-                    INSERT INTO alunos (rm, nome, curso_id)
-                    VALUES (?, ?, ?)
+                    INSERT INTO alunos (
+                        rm, nome, curso_id, created_at, updated_at
+                    )
+                    VALUES (?, ?, ?, ?, ?)
                     """,
-                    (rm, nome, course_id),
+                    (rm, nome, course_id, timestamp, timestamp),
                 )
                 return cursor.lastrowid
         except sqlite3.IntegrityError as exc:
@@ -61,7 +65,14 @@ class StudentRepository:
         with connect(self.db_path) as connection:
             row = connection.execute(
                 """
-                SELECT a.id, a.rm, a.nome, a.curso_id, c.nome AS curso
+                SELECT
+                    a.id,
+                    a.rm,
+                    a.nome,
+                    a.curso_id,
+                    c.nome AS curso,
+                    a.created_at,
+                    a.updated_at
                 FROM alunos AS a
                 JOIN cursos AS c ON c.id = a.curso_id
                 WHERE a.id = ?
@@ -74,7 +85,14 @@ class StudentRepository:
         term = str(search).strip()
 
         base_query = """
-            SELECT a.id, a.rm, a.nome, a.curso_id, c.nome AS curso
+            SELECT
+                a.id,
+                a.rm,
+                a.nome,
+                a.curso_id,
+                c.nome AS curso,
+                a.created_at,
+                a.updated_at
             FROM alunos AS a
             JOIN cursos AS c ON c.id = a.curso_id
         """
@@ -127,10 +145,16 @@ class StudentRepository:
                 cursor = connection.execute(
                     """
                     UPDATE alunos
-                    SET rm = ?, nome = ?, curso_id = ?
+                    SET rm = ?, nome = ?, curso_id = ?, updated_at = ?
                     WHERE id = ?
                     """,
-                    (rm, nome, selected_course["id"], student_id),
+                    (
+                        rm,
+                        nome,
+                        selected_course["id"],
+                        utc_now(),
+                        student_id,
+                    ),
                 )
                 return cursor.rowcount == 1
         except sqlite3.IntegrityError as exc:
