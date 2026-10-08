@@ -11,7 +11,7 @@ DEFAULT_COURSES = (
     "Recursos Humanos",
     "Outros",
 )
-SCHEMA_VERSION = 3
+SCHEMA_VERSION = 4
 
 
 def utc_now():
@@ -60,6 +60,21 @@ def _create_courses_table(connection):
             "INSERT OR IGNORE INTO cursos (nome, ativo) VALUES (?, 1)",
             (course_name,),
         )
+
+
+def _create_history_table(connection):
+    connection.execute(
+        """
+        CREATE TABLE IF NOT EXISTS historico (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            entidade TEXT NOT NULL,
+            registro_id INTEGER,
+            acao TEXT NOT NULL,
+            descricao TEXT NOT NULL,
+            created_at TEXT NOT NULL
+        )
+        """
+    )
 
 
 def _create_students_table(connection, table_name="alunos"):
@@ -184,4 +199,5 @@ def initialize_database(db_path=DEFAULT_DB_PATH):
 
         _create_courses_table(connection)
         _migrate_students_to_latest(connection)
+        _create_history_table(connection)
         connection.execute(f"PRAGMA user_version = {SCHEMA_VERSION}")

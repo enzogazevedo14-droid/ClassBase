@@ -1,0 +1,53 @@
+<HistoryScreen>:
+    canvas.before:
+        Color:
+            rgba: (0.95, 0.97, 1, 1)
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    BoxLayout:
+        orientation: "vertical"
+        padding: "20dp"
+        spacing: "10dp"
+
+        ScreenTitle:
+            text: "Histórico de ações"
+
+        MutedLabel:
+            text: "Registro local das alterações feitas no ClassBase."
+            size_hint_y: None
+            height: "30dp"
+
+        Spinner:
+            id: entity_filter
+            text: "Todos"
+            values: ("Todos", "Alunos", "Cursos")
+            size_hint_y: None
+            height: "52dp"
+            background_normal: ""
+            background_color: (0.96, 0.97, 0.99, 1)
+            color: (0.10, 0.14, 0.20, 1)
+            font_size: "14sp"
+            on_text: root.refresh_history()
+
+        MutedLabel:
+            id: history_count
+            text: "0 ações registradas"
+            size_hint_y: None
+            height: "26dp"
+
+        ScrollView:
+            do_scroll_x: False
+            bar_width: "6dp"
+
+            BoxLayout:
+                id: history_list
+                orientation: "vertical"
+                size_hint_y: None
+                height: self.minimum_height
+                spacing: "10dp"
+
+        SecondaryButton:
+            text: "Voltar"
+            on_release: root.manager.current = "home"

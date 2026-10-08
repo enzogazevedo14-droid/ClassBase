@@ -4,11 +4,17 @@ from kivy.app import App
 from kivy.core.window import Window
 from kivy.lang import Builder
 
-from database import AuthRepository, CourseRepository, StudentRepository
+from database import (
+    AuthRepository,
+    CourseRepository,
+    HistoryRepository,
+    StudentRepository,
+)
 from screens import (
     ClassBaseScreenManager,
     CourseScreen,
     EditStudentScreen,
+    HistoryScreen,
     HomeScreen,
     LoginScreen,
     RegisterStudentScreen,
@@ -28,6 +34,7 @@ KV_FILES = (
     "detalhes.kv",
     "editar.kv",
     "cursos.kv",
+    "historico.kv",
 )
 _kv_loaded = False
 
@@ -56,6 +63,7 @@ class ClassBaseApp(App):
         manager = ClassBaseScreenManager()
         manager.repository = StudentRepository(database_path)
         manager.course_repository = CourseRepository(database_path)
+        manager.history_repository = HistoryRepository(database_path)
         manager.auth_repository = AuthRepository(database_path)
         manager.auth_repository.ensure_default_user()
         manager.add_widget(LoginScreen(name="login"))
@@ -65,6 +73,7 @@ class ClassBaseApp(App):
         manager.add_widget(StudentDetailScreen(name="detalhes"))
         manager.add_widget(EditStudentScreen(name="editar"))
         manager.add_widget(CourseScreen(name="cursos"))
+        manager.add_widget(HistoryScreen(name="historico"))
         return manager
 
 

@@ -184,7 +184,7 @@ class DatabaseMigrationTests(unittest.TestCase):
         self.assertIn("created_at", columns)
         self.assertIn("updated_at", columns)
         self.assertNotIn("curso", columns)
-        self.assertEqual(version, 3)
+        self.assertEqual(version, 4)
 
     def test_v2_relationship_is_preserved_when_timestamps_are_added(self):
         self._create_v2_database()
@@ -199,7 +199,7 @@ class DatabaseMigrationTests(unittest.TestCase):
 
         with connect(self.db_path) as connection:
             version = connection.execute("PRAGMA user_version").fetchone()[0]
-        self.assertEqual(version, 3)
+        self.assertEqual(version, 4)
 
     def test_migration_keeps_autoincrement_sequence_working(self):
         self._create_v1_database()

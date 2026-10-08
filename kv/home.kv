@@ -9,7 +9,7 @@
     BoxLayout:
         orientation: "vertical"
         padding: "24dp"
-        spacing: "12dp"
+        spacing: "10dp"
 
         ScreenTitle:
             text: "ClassBase"
@@ -17,13 +17,13 @@
         MutedLabel:
             text: "Gerenciamento de alunos"
             size_hint_y: None
-            height: "30dp"
+            height: "28dp"
 
         BoxLayout:
             orientation: "vertical"
             size_hint_y: None
-            height: "112dp"
-            padding: "16dp"
+            height: "104dp"
+            padding: "14dp"
             spacing: "2dp"
             canvas.before:
                 Color:
@@ -36,13 +36,13 @@
             MutedLabel:
                 text: "Alunos cadastrados"
                 size_hint_y: None
-                height: "26dp"
+                height: "24dp"
 
             Label:
                 id: student_count
                 text: "0"
                 color: (0.10, 0.38, 0.86, 1)
-                font_size: "36sp"
+                font_size: "34sp"
                 bold: True
                 halign: "left"
                 valign: "middle"
@@ -51,8 +51,8 @@
         BoxLayout:
             orientation: "vertical"
             size_hint_y: None
-            height: "154dp"
-            padding: "16dp"
+            height: "144dp"
+            padding: "14dp"
             spacing: "4dp"
             canvas.before:
                 Color:
@@ -65,7 +65,7 @@
             MutedLabel:
                 text: "Distribuição por curso"
                 size_hint_y: None
-                height: "26dp"
+                height: "24dp"
 
             Label:
                 id: course_summary
@@ -89,6 +89,10 @@
         SecondaryButton:
             text: "Gerenciar cursos"
             on_release: root.manager.current = "cursos"
+
+        SecondaryButton:
+            text: "Histórico de ações"
+            on_release: root.manager.current = "historico"
 
         SecondaryButton:
             text: "Sair"

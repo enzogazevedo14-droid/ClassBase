@@ -18,6 +18,7 @@ class NavigationTests(unittest.TestCase):
                 "detalhes",
                 "editar",
                 "cursos",
+                "historico",
             ],
         )
         self.assertEqual(manager.current, "login")
@@ -33,6 +34,7 @@ class NavigationTests(unittest.TestCase):
             "detalhes",
             "editar",
             "cursos",
+            "historico",
             "login",
         ):
             manager.current = screen_name

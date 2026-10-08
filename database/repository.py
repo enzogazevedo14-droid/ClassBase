@@ -1,6 +1,7 @@
 import sqlite3
 
 from .connection import DEFAULT_DB_PATH, connect, initialize_database, utc_now
+from .history import record_history
 
 
 ORDER_BY = {
@@ -64,7 +65,16 @@ class StudentRepository:
                     """,
                     (rm, nome, course_id, timestamp, timestamp),
                 )
-                return cursor.lastrowid
+                student_id = cursor.lastrowid
+                record_history(
+                    connection,
+                    "aluno",
+                    student_id,
+                    "criado",
+                    f"{nome} (RM {rm}) cadastrado no curso {curso}.",
+                    timestamp,
+                )
+                return student_id
         except sqlite3.IntegrityError as exc:
             raise ValueError("Já existe um aluno com este RM.") from exc
 
@@ -131,13 +141,38 @@ class StudentRepository:
 
         return [dict(row) for row in rows]
 
+    @staticmethod
+    def _student_change_description(current, rm, nome, course_name):
+        changes = []
+
+        if current["rm"] != rm:
+            changes.append(f"RM: {current['rm']} → {rm}")
+        if current["nome"] != nome:
+            changes.append(f"Nome: {current['nome']} → {nome}")
+        if current["curso"] != course_name:
+            changes.append(f"Curso: {current['curso']} → {course_name}")
+
+        if not changes:
+            return f"{nome} (RM {rm}): cadastro salvo sem alterações."
+
+        return f"{nome} (RM {rm}): " + "; ".join(changes) + "."
+
     def update_student(self, student_id, rm, nome, curso):
         rm, nome, curso = self._student_data(rm, nome, curso)
 
         try:
             with connect(self.db_path) as connection:
                 current = connection.execute(
-                    "SELECT curso_id FROM alunos WHERE id = ?",
+                    """
+                    SELECT
+                        a.rm,
+                        a.nome,
+                        a.curso_id,
+                        c.nome AS curso
+                    FROM alunos AS a
+                    JOIN cursos AS c ON c.id = a.curso_id
+                    WHERE a.id = ?
+                    """,
                     (student_id,),
                 ).fetchone()
 
@@ -154,6 +189,7 @@ class StudentRepository:
                 ):
                     raise ValueError("Curso não encontrado ou inativo.")
 
+                timestamp = utc_now()
                 cursor = connection.execute(
                     """
                     UPDATE alunos
@@ -164,21 +200,66 @@ class StudentRepository:
                         rm,
                         nome,
                         selected_course["id"],
-                        utc_now(),
+                        timestamp,
                         student_id,
                     ),
                 )
-                return cursor.rowcount == 1
+
+                if cursor.rowcount == 1:
+                    description = self._student_change_description(
+                        current,
+                        rm,
+                        nome,
+                        selected_course["nome"],
+                    )
+                    record_history(
+                        connection,
+                        "aluno",
+                        student_id,
+                        "atualizado",
+                        description,
+                        timestamp,
+                    )
+                    return True
+
+                return False
         except sqlite3.IntegrityError as exc:
             raise ValueError("Já existe um aluno com este RM.") from exc
 
     def delete_student(self, student_id):
         with connect(self.db_path) as connection:
+            current = connection.execute(
+                """
+                SELECT a.rm, a.nome, c.nome AS curso
+                FROM alunos AS a
+                JOIN cursos AS c ON c.id = a.curso_id
+                WHERE a.id = ?
+                """,
+                (student_id,),
+            ).fetchone()
+
+            if current is None:
+                return False
+
             cursor = connection.execute(
                 "DELETE FROM alunos WHERE id = ?",
                 (student_id,),
             )
-            return cursor.rowcount == 1
+
+            if cursor.rowcount == 1:
+                record_history(
+                    connection,
+                    "aluno",
+                    student_id,
+                    "excluido",
+                    (
+                        f"{current['nome']} (RM {current['rm']}) excluído "
+                        f"do curso {current['curso']}."
+                    ),
+                )
+                return True
+
+            return False
 
     def count_students(self):
         with connect(self.db_path) as connection:

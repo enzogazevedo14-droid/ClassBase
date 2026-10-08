@@ -6,3 +6,4 @@ class ClassBaseScreenManager(ScreenManager):
     repository = ObjectProperty(None, allownone=True)
     auth_repository = ObjectProperty(None, allownone=True)
     course_repository = ObjectProperty(None, allownone=True)
+    history_repository = ObjectProperty(None, allownone=True)

@@ -1,6 +1,7 @@
 import sqlite3
 
 from .connection import DEFAULT_DB_PATH, connect, initialize_database
+from .history import record_history
 
 
 class CourseRepository:
@@ -23,7 +24,15 @@ class CourseRepository:
                     "INSERT INTO cursos (nome, ativo) VALUES (?, 1)",
                     (name,),
                 )
-                return cursor.lastrowid
+                course_id = cursor.lastrowid
+                record_history(
+                    connection,
+                    "curso",
+                    course_id,
+                    "criado",
+                    f"Curso {name} cadastrado.",
+                )
+                return course_id
         except sqlite3.IntegrityError as exc:
             raise ValueError("Já existe um curso com este nome.") from exc
 
@@ -81,21 +90,72 @@ class CourseRepository:
         name = self._clean_name(name)
         try:
             with connect(self.db_path) as connection:
+                current = connection.execute(
+                    "SELECT nome FROM cursos WHERE id = ?",
+                    (course_id,),
+                ).fetchone()
+
+                if current is None:
+                    return False
+
                 cursor = connection.execute(
                     "UPDATE cursos SET nome = ? WHERE id = ?",
                     (name, course_id),
                 )
-                return cursor.rowcount == 1
+
+                if cursor.rowcount == 1:
+                    if current["nome"] == name:
+                        description = f"Curso {name}: cadastro salvo sem alterações."
+                    else:
+                        description = (
+                            f"Curso renomeado: {current['nome']} → {name}."
+                        )
+                    record_history(
+                        connection,
+                        "curso",
+                        course_id,
+                        "atualizado",
+                        description,
+                    )
+                    return True
+
+                return False
         except sqlite3.IntegrityError as exc:
             raise ValueError("Já existe um curso com este nome.") from exc
 
     def set_course_active(self, course_id, active):
+        active = bool(active)
+
         with connect(self.db_path) as connection:
+            current = connection.execute(
+                "SELECT nome, ativo FROM cursos WHERE id = ?",
+                (course_id,),
+            ).fetchone()
+
+            if current is None:
+                return False
+
+            desired = 1 if active else 0
+            if current["ativo"] == desired:
+                return True
+
             cursor = connection.execute(
                 "UPDATE cursos SET ativo = ? WHERE id = ?",
-                (1 if active else 0, course_id),
+                (desired, course_id),
             )
-            return cursor.rowcount == 1
+
+            if cursor.rowcount == 1:
+                action = "ativado" if active else "desativado"
+                record_history(
+                    connection,
+                    "curso",
+                    course_id,
+                    action,
+                    f"Curso {current['nome']} {action}.",
+                )
+                return True
+
+            return False
 
     def count_students(self, course_id):
         with connect(self.db_path) as connection:
@@ -108,11 +168,30 @@ class CourseRepository:
     def delete_course(self, course_id):
         try:
             with connect(self.db_path) as connection:
+                current = connection.execute(
+                    "SELECT nome FROM cursos WHERE id = ?",
+                    (course_id,),
+                ).fetchone()
+
+                if current is None:
+                    return False
+
                 cursor = connection.execute(
                     "DELETE FROM cursos WHERE id = ?",
                     (course_id,),
                 )
-                return cursor.rowcount == 1
+
+                if cursor.rowcount == 1:
+                    record_history(
+                        connection,
+                        "curso",
+                        course_id,
+                        "excluido",
+                        f"Curso {current['nome']} excluído.",
+                    )
+                    return True
+
+                return False
         except sqlite3.IntegrityError as exc:
             raise ValueError(
                 "Não é possível excluir um curso vinculado a alunos."
