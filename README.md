@@ -76,3 +76,33 @@ O banco de produção é salvo no diretório de dados do usuário da aplicação
 - [Checklist de QA física](docs/RELEASE_CHECKLIST.md)
 
 A documentação acadêmica já está estruturada para a apresentação do grupo. Antes da entrega final, faltam apenas preencher os nomes dos outros integrantes e o nome do(a) professor(a).
+
+
+## ClassBase 1.1 — RC em desenvolvimento
+
+A versão 1.0 acima continua sendo o checkpoint fisicamente aprovado. A evolução 1.1 está isolada na branch `release/classbase-1.1-rc` e **ainda não foi promovida para `main`**.
+
+Estado do RC2:
+
+- código: `8040577`;
+- 83/83 testes automatizados PASS;
+- schema SQLite v4;
+- cursos relacionais + chave estrangeira;
+- detalhes/timestamps;
+- dashboard, filtros e ordenação;
+- histórico/auditoria;
+- APK DEV 0.2.1 gerado e assinado com v2;
+- QA física da 1.1 ainda pendente.
+
+Materiais da 1.1:
+
+- [Estado do RC](docs/CLASSBASE_1_1_STATUS.md)
+- [Pré-QA física RC2](docs/PRE_QA_FISICA_RC2.md)
+- [Guia de defesa do código](docs/GUIA_DEFESA_CODIGO_1_1.md)
+- [Comparação de ferramentas](docs/COMPARACAO_FERRAMENTAS.md)
+- [Mapa das telas e código](docs/MAPA_TELAS_CODIGO_1_1.md)
+- [Simulado de perguntas do professor](docs/SIMULADO_PROFESSOR_1_1.md)
+- [Estudo: Cursos](docs/ESTUDO_1_1_CURSOS.md)
+- [Estudo: Detalhes](docs/ESTUDO_1_1_DETALHES.md)
+- [Estudo: Dashboard e filtros](docs/ESTUDO_1_1_DASHBOARD_FILTROS.md)
+- [Estudo: Histórico](docs/ESTUDO_1_1_HISTORICO.md)

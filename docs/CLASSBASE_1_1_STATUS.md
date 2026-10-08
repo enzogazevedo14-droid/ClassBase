@@ -1,4 +1,4 @@
-# ClassBase 1.1 — Release Candidate de desenvolvimento
+# ClassBase 1.1 — Estado do Release Candidate
 
 ## Objetivo
 
@@ -13,9 +13,26 @@ A versão 1.1 evolui o ClassBase sem alterar sua proposta escolar principal:
 
 A versão 1.0 fisicamente aprovada continua preservada pela tag `android-qa-pass-0.1.0`.
 
+## Checkpoint atual
+
+Branch:
+
+```text
+release/classbase-1.1-rc
+```
+
+Commit de código do RC2:
+
+```text
+8040577
+fix: harden ClassBase 1.1 pre-physical RC
+```
+
+A `main` ainda permanece na versão 1.0/documentação aprovada. A 1.1 não será promovida antes da QA física.
+
 ## Melhorias implementadas
 
-### 1. Cursos como entidade do banco
+### Cursos como entidade do banco
 
 - tabela `cursos`;
 - relacionamento 1:N;
@@ -23,135 +40,177 @@ A versão 1.0 fisicamente aprovada continua preservada pela tag `android-qa-pass
 - CRUD de cursos;
 - ativar/desativar cursos;
 - proteção contra exclusão de curso vinculado;
-- migração de alunos antigos sem perda de dados.
+- migração de alunos antigos sem perda de dados;
+- cursos padrão inseridos somente na criação inicial da tabela.
 
-### 2. Datas e detalhes do aluno
+### Datas e detalhes do aluno
 
 - `created_at`;
 - `updated_at`;
 - tela Detalhes do aluno;
-- conversão do horário UTC para o horário local na interface.
+- conversão UTC → horário local para exibição;
+- salvar sem mudanças não altera `updated_at`.
 
-### 3. Dashboard, filtros e ordenação
+### Dashboard, filtros e ordenação
 
-- quantidade total de alunos;
+- total de alunos;
 - distribuição por curso;
 - `COUNT`;
 - `GROUP BY`;
 - `LEFT JOIN`;
 - filtro por curso;
 - pesquisa combinada;
-- ordenação por nome, RM ou data de cadastro;
+- ordenação por nome, RM ou mais recentes;
 - contador de resultados.
 
-### 4. Histórico de alterações
+### Histórico de alterações
 
 - tabela `historico`;
 - criação/edição/exclusão de aluno;
 - criação/edição/ativação/desativação/exclusão de curso;
-- registro na mesma transação da operação principal;
+- histórico na mesma transação da operação principal;
 - histórico preservado após exclusão;
-- tela de histórico com filtro por entidade.
+- filtro por entidade;
+- operações sem mudança real não geram eventos artificiais.
 
-## Versão do schema SQLite
+### Responsividade preventiva
+
+- Home rolável;
+- Cadastro rolável;
+- Edição rolável;
+- Detalhes rolável;
+- popup de edição de curso com altura fixa;
+- cards do histórico com mais espaço para descrições longas;
+- teclado configurado em modo `resize`.
+
+## Schema SQLite
 
 ```text
 PRAGMA user_version = 4
 ```
 
-A inicialização migra os formatos anteriores aceitos pelo projeto para o schema atual.
+Migrações cobertas:
+
+- formato 1.0 com curso como texto;
+- formato relacional anterior sem timestamps;
+- reabertura repetida/idempotência;
+- banco legado com 120 alunos;
+- continuidade de CRUD após migração.
 
 ## Testes automatizados
 
-Checkpoint anterior ao APK DEV:
+Estado atual:
 
 ```text
-68/68 PASS
+83/83 PASS
 ```
 
-A suíte cobre, entre outros:
+Também passou:
+
+- `python -m compileall`;
+- `git diff --check`;
+- auditoria UTF-8 sem caracteres de substituição;
+- `PRAGMA integrity_check = ok`;
+- `PRAGMA foreign_key_check` sem erros.
+
+A suíte inclui testes de:
 
 - autenticação;
+- senha sem texto puro;
 - CRUD de alunos;
-- CRUD/regras de cursos;
+- cursos e integridade referencial;
 - migrações;
 - timestamps;
-- tela de detalhes;
+- detalhes;
 - dashboard;
-- filtros e ordenação;
-- histórico/auditoria;
+- filtros;
+- ordenação;
+- histórico;
+- rollback transacional;
+- tentativa de entrada semelhante a SQL injection;
+- responsividade estrutural;
 - navegação;
-- persistência;
-- UX mobile já existente.
+- persistência.
 
-## Estratégia de QA Android
+## APK DEV RC2
 
-A 1.1 não será instalada sobre a versão 1.0 neste primeiro teste.
-
-O APK de desenvolvimento utilizará outro package ID:
-
-```text
-org.classbase.dev.classbase
-```
-
-Título:
-
-```text
-ClassBase 1.1 DEV
-```
-
-Versão:
-
-```text
-0.2.0
-```
-
-Isso permite manter lado a lado:
-
-```text
-ClassBase 1.0 aprovado
-ClassBase 1.1 DEV
-```
-
-com bancos separados no Android.
-
-## APK DEV gerado
-
-Build Android isolado concluído com sucesso em 08/10/2026.
+O RC2 foi gerado a partir do código do commit `8040577`.
 
 - Título: `ClassBase 1.1 DEV`
-- Versão: `0.2.0`
-- Package Android: `org.classbase.dev.classbase`
+- Versão: `0.2.1`
+- Package: `org.classbase.dev.classbase`
 - ABI: `arm64-v8a`
 - minSdk: 24
 - targetSdk: 33
-- Arquivo no Windows: `C:\\Users\\User\\Downloads\\ClassBase-1.1-DEV-0.2.0-debug.apk`
-- Cópia preservada: `dist/ClassBase-1.1-DEV-0.2.0-debug.apk`
-- Tamanho: 23.327.990 bytes
-- SHA-256: `86B72DB787E7ECEDC222A5E7981CF0003AAD46AC0DAA11C011E228EDDC35F490`
+- Tamanho: 23.328.354 bytes
 - APK Signature Scheme v2: PASS
 - Buildozer/Gradle: PASS
+- SHA-256: `6FF40D62189CBD1140E7F1AD3B97E7E67D1E7213F8E13D84875C643988C44809`
 
-A configuração usada para gerar o APK DEV foi aplicada apenas na cópia de build do WSL. O `buildozer.spec` foi restaurado depois do build e o repositório WSL voltou a ficar limpo.
+Arquivos:
 
-## Estado da QA física
+```text
+C:\Users\User\Downloads\ClassBase-1.1-DEV-RC2-0.2.1-debug.apk
+C:\Users\User\Documents\ClassBase\dist\ClassBase-1.1-DEV-RC2-0.2.1-debug.apk
+```
 
-Pendente. No momento da geração do APK, o ADB não encontrou nenhum dispositivo conectado.
+O APK anterior 0.2.0 deve ser considerado **superado pelo RC2 0.2.1**.
 
-A versão 1.0 permanece intacta. Quando o celular estiver conectado, o DEV pode ser instalado como aplicativo separado, pois utiliza outro package ID.
+## Isolamento da versão 1.0
 
-## Gate para promover a 1.1
+A 1.1 usa package diferente da 1.0:
 
-Antes de substituir a versão principal:
+```text
+1.0: org.classbase.classbase
+1.1 DEV: org.classbase.dev.classbase
+```
 
-1. build Android isolado;
-2. instalar como app DEV;
-3. validar telas novas;
-4. validar cadastro/edição/exclusão;
-5. validar cursos;
-6. validar detalhes;
-7. validar filtros/dashboard;
-8. validar histórico;
-9. verificar teclado e layouts;
-10. repetir suíte automatizada;
-11. somente então decidir merge/promoção.
+Portanto os dois podem coexistir no Android com bancos separados.
+
+A alteração de package/título/versão foi feita apenas na cópia de build do WSL. O `buildozer.spec` versionado foi restaurado e o repositório WSL voltou a ficar limpo.
+
+## QA física
+
+Ainda pendente.
+
+O que precisa ser validado no aparelho:
+
+1. instalação lado a lado com a 1.0;
+2. abertura/presplash/login;
+3. Home e rolagem;
+4. cadastro;
+5. cursos;
+6. detalhes;
+7. edição;
+8. busca/filtro/ordenação;
+9. dashboard;
+10. histórico;
+11. teclado nos novos fluxos;
+12. persistência ao encerrar/reabrir;
+13. atualização do APK DEV preservando o banco;
+14. ausência de crash/logcat fatal.
+
+## Gate atual
+
+```text
+CÓDIGO                     PASS
+BANCO                      PASS
+MIGRAÇÕES                  PASS
+TESTES AUTOMATIZADOS       83/83 PASS
+COMPILAÇÃO PYTHON          PASS
+APK ANDROID RC2            PASS
+ASSINATURA V2              PASS
+QA FÍSICA 1.1              PENDENTE
+MERGE EM MAIN              BLOQUEADO ATÉ QA FÍSICA
+```
+
+## Materiais de defesa
+
+- `GUIA_DEFESA_CODIGO_1_1.md`;
+- `COMPARACAO_FERRAMENTAS.md`;
+- `MAPA_TELAS_CODIGO_1_1.md`;
+- `ESTUDO_1_1_CURSOS.md`;
+- `ESTUDO_1_1_DETALHES.md`;
+- `ESTUDO_1_1_DASHBOARD_FILTROS.md`;
+- `ESTUDO_1_1_HISTORICO.md`;
+- `PRE_QA_FISICA_RC2.md`.
