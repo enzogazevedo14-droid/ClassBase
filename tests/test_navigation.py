@@ -10,7 +10,7 @@ class NavigationTests(unittest.TestCase):
 
         self.assertEqual(
             manager.screen_names,
-            ["login", "home", "cadastro", "alunos", "editar"],
+            ["login", "home", "cadastro", "alunos", "editar", "cursos"],
         )
         self.assertEqual(manager.current, "login")
 
@@ -18,7 +18,14 @@ class NavigationTests(unittest.TestCase):
         app = ClassBaseApp()
         manager = app.build()
 
-        for screen_name in ("home", "cadastro", "alunos", "editar", "login"):
+        for screen_name in (
+            "home",
+            "cadastro",
+            "alunos",
+            "editar",
+            "cursos",
+            "login",
+        ):
             manager.current = screen_name
             self.assertEqual(manager.current, screen_name)
 

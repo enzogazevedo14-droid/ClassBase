@@ -1,0 +1,53 @@
+<CourseScreen>:
+    canvas.before:
+        Color:
+            rgba: (0.95, 0.97, 1, 1)
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    BoxLayout:
+        orientation: "vertical"
+        padding: "24dp"
+        spacing: "12dp"
+
+        ScreenTitle:
+            text: "Gerenciar cursos"
+
+        MutedLabel:
+            text: "Cadastre, edite, ative ou desative os cursos."
+            size_hint_y: None
+            height: "30dp"
+
+        AppTextInput:
+            id: course_name_input
+            hint_text: "Nome do curso"
+
+        PrimaryButton:
+            text: "Adicionar curso"
+            on_release: root.create_course()
+
+        FeedbackLabel:
+            id: feedback
+            text: ""
+
+        MutedLabel:
+            id: course_count
+            text: "0 curso(s) cadastrado(s)"
+            size_hint_y: None
+            height: "28dp"
+
+        ScrollView:
+            do_scroll_x: False
+            bar_width: "6dp"
+
+            BoxLayout:
+                id: course_list
+                orientation: "vertical"
+                size_hint_y: None
+                height: self.minimum_height
+                spacing: "10dp"
+
+        SecondaryButton:
+            text: "Voltar"
+            on_release: root.manager.current = "home"

@@ -23,13 +23,33 @@ class StudentRepository:
             cls._clean(curso, "Curso"),
         )
 
+    @staticmethod
+    def _find_course_id(connection, course_name):
+        row = connection.execute(
+            """
+            SELECT id
+            FROM cursos
+            WHERE nome = ? COLLATE NOCASE
+              AND ativo = 1
+            """,
+            (course_name,),
+        ).fetchone()
+
+        if row is None:
+            raise ValueError("Curso não encontrado ou inativo.")
+        return row["id"]
+
     def create_student(self, rm, nome, curso):
         rm, nome, curso = self._student_data(rm, nome, curso)
         try:
             with connect(self.db_path) as connection:
+                course_id = self._find_course_id(connection, curso)
                 cursor = connection.execute(
-                    "INSERT INTO alunos (rm, nome, curso) VALUES (?, ?, ?)",
-                    (rm, nome, curso),
+                    """
+                    INSERT INTO alunos (rm, nome, curso_id)
+                    VALUES (?, ?, ?)
+                    """,
+                    (rm, nome, course_id),
                 )
                 return cursor.lastrowid
         except sqlite3.IntegrityError as exc:
@@ -38,31 +58,43 @@ class StudentRepository:
     def get_student(self, student_id):
         with connect(self.db_path) as connection:
             row = connection.execute(
-                "SELECT id, rm, nome, curso FROM alunos WHERE id = ?",
+                """
+                SELECT a.id, a.rm, a.nome, a.curso_id, c.nome AS curso
+                FROM alunos AS a
+                JOIN cursos AS c ON c.id = a.curso_id
+                WHERE a.id = ?
+                """,
                 (student_id,),
             ).fetchone()
         return dict(row) if row else None
 
     def list_students(self, search=""):
         term = str(search).strip()
+
+        base_query = """
+            SELECT a.id, a.rm, a.nome, a.curso_id, c.nome AS curso
+            FROM alunos AS a
+            JOIN cursos AS c ON c.id = a.curso_id
+        """
+
         with connect(self.db_path) as connection:
             if term:
                 pattern = f"%{term}%"
                 rows = connection.execute(
-                    """
-                    SELECT id, rm, nome, curso
-                    FROM alunos
-                    WHERE rm LIKE ? OR nome LIKE ? OR curso LIKE ?
-                    ORDER BY nome COLLATE NOCASE, id
+                    base_query
+                    + """
+                    WHERE a.rm LIKE ?
+                       OR a.nome LIKE ?
+                       OR c.nome LIKE ?
+                    ORDER BY a.nome COLLATE NOCASE, a.id
                     """,
                     (pattern, pattern, pattern),
                 ).fetchall()
             else:
                 rows = connection.execute(
-                    """
-                    SELECT id, rm, nome, curso
-                    FROM alunos
-                    ORDER BY nome COLLATE NOCASE, id
+                    base_query
+                    + """
+                    ORDER BY a.nome COLLATE NOCASE, a.id
                     """
                 ).fetchall()
         return [dict(row) for row in rows]
@@ -71,13 +103,14 @@ class StudentRepository:
         rm, nome, curso = self._student_data(rm, nome, curso)
         try:
             with connect(self.db_path) as connection:
+                course_id = self._find_course_id(connection, curso)
                 cursor = connection.execute(
                     """
                     UPDATE alunos
-                    SET rm = ?, nome = ?, curso = ?
+                    SET rm = ?, nome = ?, curso_id = ?
                     WHERE id = ?
                     """,
-                    (rm, nome, curso, student_id),
+                    (rm, nome, course_id, student_id),
                 )
                 return cursor.rowcount == 1
         except sqlite3.IntegrityError as exc:

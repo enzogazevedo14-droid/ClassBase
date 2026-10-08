@@ -1,5 +1,6 @@
 from .alunos import StudentListScreen
-from .cadastro import COURSES, RegisterStudentScreen
+from .cadastro import RegisterStudentScreen
+from .cursos import CourseScreen
 from .editar import EditStudentScreen
 from .home import HomeScreen
 from .login import LoginScreen
@@ -12,5 +13,5 @@ __all__ = [
     "RegisterStudentScreen",
     "StudentListScreen",
     "EditStudentScreen",
-    "COURSES",
+    "CourseScreen",
 ]

@@ -15,28 +15,35 @@ class StudentRepositoryTests(unittest.TestCase):
         self.temp_dir.cleanup()
 
     def test_create_and_get_student(self):
-        student_id = self.repo.create_student("123", "Ana Souza", "DS")
+        student_id = self.repo.create_student(
+            "123", "Ana Souza", "Desenvolvimento de Sistemas"
+        )
         student = self.repo.get_student(student_id)
 
         self.assertEqual(student["rm"], "123")
         self.assertEqual(student["nome"], "Ana Souza")
-        self.assertEqual(student["curso"], "DS")
+        self.assertEqual(student["curso"], "Desenvolvimento de Sistemas")
+        self.assertIsInstance(student["curso_id"], int)
 
     def test_rm_must_be_unique(self):
-        self.repo.create_student("123", "Ana", "DS")
+        self.repo.create_student("123", "Ana", "Desenvolvimento de Sistemas")
 
         with self.assertRaisesRegex(ValueError, "Já existe"):
             self.repo.create_student("123", "Bruno", "Administração")
 
     def test_required_fields_are_validated(self):
         with self.assertRaisesRegex(ValueError, "RM é obrigatório"):
-            self.repo.create_student("   ", "Ana", "DS")
+            self.repo.create_student("   ", "Ana", "Desenvolvimento de Sistemas")
 
         with self.assertRaisesRegex(ValueError, "Nome é obrigatório"):
-            self.repo.create_student("123", "", "DS")
+            self.repo.create_student("123", "", "Desenvolvimento de Sistemas")
 
         with self.assertRaisesRegex(ValueError, "Curso é obrigatório"):
             self.repo.create_student("123", "Ana", "   ")
+
+    def test_unknown_course_is_rejected(self):
+        with self.assertRaisesRegex(ValueError, "Curso não encontrado"):
+            self.repo.create_student("123", "Ana", "Curso inexistente")
 
     def test_values_are_trimmed(self):
         student_id = self.repo.create_student(
@@ -49,8 +56,8 @@ class StudentRepositoryTests(unittest.TestCase):
         self.assertEqual(student["curso"], "Desenvolvimento de Sistemas")
 
     def test_list_students_is_ordered_by_name(self):
-        self.repo.create_student("2", "Carlos", "DS")
-        self.repo.create_student("1", "Ana", "DS")
+        self.repo.create_student("2", "Carlos", "Desenvolvimento de Sistemas")
+        self.repo.create_student("1", "Ana", "Desenvolvimento de Sistemas")
 
         students = self.repo.list_students()
 
@@ -65,7 +72,9 @@ class StudentRepositoryTests(unittest.TestCase):
         self.assertEqual(len(self.repo.list_students("Admin")), 1)
 
     def test_update_student(self):
-        student_id = self.repo.create_student("123", "Ana", "DS")
+        student_id = self.repo.create_student(
+            "123", "Ana", "Desenvolvimento de Sistemas"
+        )
 
         updated = self.repo.update_student(
             student_id, "124", "Ana Souza", "Administração"
@@ -78,14 +87,16 @@ class StudentRepositoryTests(unittest.TestCase):
         self.assertEqual(student["curso"], "Administração")
 
     def test_update_rejects_duplicate_rm(self):
-        first_id = self.repo.create_student("100", "Ana", "DS")
-        self.repo.create_student("200", "Bruno", "DS")
+        first_id = self.repo.create_student("100", "Ana", "Administração")
+        self.repo.create_student("200", "Bruno", "Desenvolvimento de Sistemas")
 
         with self.assertRaisesRegex(ValueError, "Já existe"):
-            self.repo.update_student(first_id, "200", "Ana", "DS")
+            self.repo.update_student(first_id, "200", "Ana", "Administração")
 
     def test_delete_student(self):
-        student_id = self.repo.create_student("123", "Ana", "DS")
+        student_id = self.repo.create_student(
+            "123", "Ana", "Desenvolvimento de Sistemas"
+        )
 
         self.assertTrue(self.repo.delete_student(student_id))
         self.assertIsNone(self.repo.get_student(student_id))
@@ -93,12 +104,12 @@ class StudentRepositoryTests(unittest.TestCase):
 
     def test_count_students(self):
         self.assertEqual(self.repo.count_students(), 0)
-        self.repo.create_student("1", "Ana", "DS")
-        self.repo.create_student("2", "Bruno", "DS")
+        self.repo.create_student("1", "Ana", "Desenvolvimento de Sistemas")
+        self.repo.create_student("2", "Bruno", "Administração")
         self.assertEqual(self.repo.count_students(), 2)
 
     def test_data_persists_between_repository_instances(self):
-        self.repo.create_student("123", "Ana", "DS")
+        self.repo.create_student("123", "Ana", "Desenvolvimento de Sistemas")
 
         reopened_repo = StudentRepository(self.db_path)
 
