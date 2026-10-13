@@ -108,7 +108,7 @@ class CourseRepository:
 
                 if cursor.rowcount == 1:
                     description = (
-                        f"Curso renomeado: {current['nome']} → {name}."
+                        f"Curso renomeado: {current['nome']} para {name}."
                     )
                     record_history(
                         connection,

@@ -146,11 +146,11 @@ class StudentRepository:
         changes = []
 
         if current["rm"] != rm:
-            changes.append(f"RM: {current['rm']} → {rm}")
+            changes.append(f"RM: {current['rm']} para {rm}")
         if current["nome"] != nome:
-            changes.append(f"Nome: {current['nome']} → {nome}")
+            changes.append(f"Nome: {current['nome']} para {nome}")
         if current["curso"] != course_name:
-            changes.append(f"Curso: {current['curso']} → {course_name}")
+            changes.append(f"Curso: {current['curso']} para {course_name}")
 
         if not changes:
             return f"{nome} (RM {rm}): cadastro salvo sem alterações."

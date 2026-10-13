@@ -43,9 +43,9 @@ class HistoryRepositoryTests(unittest.TestCase):
         )
         self.assertEqual(events[0]["registro_id"], student_id)
         self.assertIn("Ana Souza", events[0]["descricao"])
-        self.assertIn("RM: 100 → 101", events[1]["descricao"])
+        self.assertIn("RM: 100 para 101", events[1]["descricao"])
         self.assertIn(
-            "Curso: Desenvolvimento de Sistemas → Administração",
+            "Curso: Desenvolvimento de Sistemas para Administração",
             events[1]["descricao"],
         )
 
