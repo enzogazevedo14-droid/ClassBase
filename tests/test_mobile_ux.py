@@ -52,7 +52,7 @@ class MobileUxTests(unittest.TestCase):
                 msg=f"{screen_name} deve permitir rolagem em telas menores.",
             )
 
-    def test_course_edit_popup_uses_fixed_mobile_safe_height(self):
+    def test_course_edit_popup_uses_compact_mobile_safe_height(self):
         screen = self.manager.get_screen("cursos")
         course = self.manager.course_repository.list_courses()[0]
 
@@ -61,7 +61,8 @@ class MobileUxTests(unittest.TestCase):
 
         popup = open_mock.call_args.args[0]
         self.assertIsNone(popup.size_hint_y)
-        self.assertGreaterEqual(popup.height, dp(250))
+        self.assertGreaterEqual(popup.height, dp(200))
+        self.assertLessEqual(popup.height, dp(210))
 
     def test_long_history_description_has_extra_vertical_space(self):
         student_id = self.manager.repository.create_student(

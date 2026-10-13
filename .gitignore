@@ -12,3 +12,6 @@ build/
 .DS_Store
 Thumbs.db
 ui-*.png
+
+qa/
+rc3-tests.log

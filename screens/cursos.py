@@ -120,34 +120,43 @@ class CourseScreen(Screen):
             self.ids.feedback.text = "Curso não encontrado."
             return False
 
-        content = BoxLayout(orientation="vertical", padding=16, spacing=10)
+        content = BoxLayout(
+            orientation="vertical",
+            padding=dp(10),
+            spacing=dp(6),
+        )
         name_input = TextInput(
             text=course["nome"],
             multiline=False,
             size_hint_y=None,
-            height="48dp",
+            height=dp(44),
         )
-        popup_feedback = Label(
-            text="",
-            color=ERROR_COLOR,
-            size_hint_y=None,
-            height="34dp",
-        )
-        content.add_widget(name_input)
-        content.add_widget(popup_feedback)
 
-        actions = BoxLayout(size_hint_y=None, height="48dp", spacing=8)
+        actions = BoxLayout(
+            size_hint_y=None,
+            height=dp(42),
+            spacing=dp(6),
+        )
         cancel_button = Button(text="Cancelar")
         save_button = Button(text="Salvar")
         actions.add_widget(cancel_button)
         actions.add_widget(save_button)
+        content.add_widget(name_input)
         content.add_widget(actions)
+
+        popup_feedback = Label(
+            text="",
+            color=ERROR_COLOR,
+            size_hint_y=None,
+            height=dp(22),
+        )
+        content.add_widget(popup_feedback)
 
         popup = Popup(
             title="Editar curso",
             content=content,
             size_hint=(0.88, None),
-            height=dp(260),
+            height=dp(205),
             auto_dismiss=False,
         )
         cancel_button.bind(on_release=popup.dismiss)
