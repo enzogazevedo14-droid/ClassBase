@@ -25,3 +25,25 @@ jobs:
       - name: Rodar suite de banco, migracao e contratos sem Kivy
         run: |
           python -m unittest -v tests.test_auth tests.test_students tests.test_courses tests.test_prephysical_integrity tests.test_delete_confirmation_contract tests.test_course_edit_layout_contract tests.test_first_run_security
+
+  kivy-ui-integration:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 20
+    env:
+      KIVY_NO_ARGS: "1"
+      KIVY_NO_CONSOLELOG: "1"
+    steps:
+      - name: Obter branch isolada
+        uses: actions/checkout@v4
+      - name: Preparar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Preparar Kivy e display virtual apenas no runner
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y xvfb libmtdev1 libgl1
+          python -m pip install "kivy==2.3.1"
+      - name: Executar testes de interface em display virtual
+        run: |
+          xvfb-run -a python -m unittest -v tests.test_login_flow tests.test_navigation tests.test_mobile_ux tests.test_crud_ui tests.test_dashboard_filters tests.test_history tests.test_student_details tests.test_vertical_flow
