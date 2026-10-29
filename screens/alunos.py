@@ -1,6 +1,8 @@
 from kivy.graphics import Color, RoundedRectangle
+from kivy.metrics import dp
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
+from kivy.uix.checkbox import CheckBox
 from kivy.uix.label import Label
 from kivy.uix.popup import Popup
 from kivy.uix.screenmanager import Screen
@@ -166,14 +168,44 @@ class StudentListScreen(Screen):
         return True
 
     def request_delete(self, student_id, student_name):
-        content = BoxLayout(orientation="vertical", padding=16, spacing=12)
-        content.add_widget(
-            Label(text=f"Deseja excluir {student_name}?")
-        )
+        student = self.manager.repository.get_student(student_id)
+        if student is None:
+            return False
 
-        actions = BoxLayout(size_hint_y=None, height="48dp", spacing=8)
+        content = BoxLayout(
+            orientation="vertical", padding=dp(12), spacing=dp(10)
+        )
+        message = Label(
+            text=f"Excluir definitivamente o aluno:\n{student['nome']}?",
+            halign="center", valign="middle",
+        )
+        message.bind(
+            size=lambda widget, _: setattr(widget, "text_size", (widget.width, None))
+        )
+        content.add_widget(message)
+
+        confirmation = BoxLayout(
+            orientation="horizontal", size_hint_y=None, height=dp(44)
+        )
+        confirm_checkbox = CheckBox(
+            active=False, size_hint_x=None, width=dp(44)
+        )
+        confirm_label = Label(
+            text="Confirmo a exclusão permanente",
+            halign="left", valign="middle",
+        )
+        confirm_label.bind(
+            size=lambda widget, _: setattr(widget, "text_size", (widget.width, None))
+        )
+        confirmation.add_widget(confirm_checkbox)
+        confirmation.add_widget(confirm_label)
+        content.add_widget(confirmation)
+
+        actions = BoxLayout(
+            size_hint_y=None, height=dp(48), spacing=dp(8)
+        )
         cancel_button = Button(text="Cancelar")
-        delete_button = Button(text="Excluir")
+        delete_button = Button(text="Excluir", disabled=True)
         actions.add_widget(cancel_button)
         actions.add_widget(delete_button)
         content.add_widget(actions)
@@ -181,17 +213,27 @@ class StudentListScreen(Screen):
         popup = Popup(
             title="Confirmar exclusão",
             content=content,
-            size_hint=(0.85, 0.35),
+            size_hint=(0.92, None),
+            height=dp(270),
             auto_dismiss=False,
         )
         cancel_button.bind(on_release=popup.dismiss)
+        confirm_checkbox.bind(
+            active=lambda _, selected: setattr(
+                delete_button, "disabled", not selected
+            )
+        )
 
         def confirm_delete(*_):
+            if not confirm_checkbox.active:
+                return
+            delete_button.disabled = True
             self.delete_student(student_id)
             popup.dismiss()
 
         delete_button.bind(on_release=confirm_delete)
         popup.open()
+        return True
 
     def delete_student(self, student_id):
         deleted = self.manager.repository.delete_student(student_id)
