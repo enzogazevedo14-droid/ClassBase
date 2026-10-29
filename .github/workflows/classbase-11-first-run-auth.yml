@@ -1,0 +1,26 @@
+name: ClassBase 1.1 - First run auth safety
+
+on:
+  push:
+    branches:
+      - feat/classbase-11-first-run-security
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  auth-and-regression:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 15
+    steps:
+      - name: Obter branch isolada
+        uses: actions/checkout@v4
+      - name: Preparar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Validar sintaxe de todo o codigo Python
+        run: python -m compileall -q database screens tests main.py
+      - name: Rodar testes completos de banco, migracao, interfaces contratuais e seguranca
+        run: python -m unittest discover -s tests -p "test_*.py" -v
