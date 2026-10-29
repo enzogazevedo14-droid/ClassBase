@@ -1,0 +1,53 @@
+<InitialSetupScreen>:
+    canvas.before:
+        Color:
+            rgba: (0.95, 0.97, 1, 1)
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    ScrollView:
+        do_scroll_x: False
+        bar_width: "6dp"
+        BoxLayout:
+            orientation: "vertical"
+            size_hint_y: None
+            height: self.minimum_height
+            padding: "24dp"
+            spacing: "12dp"
+
+            ScreenTitle:
+                text: "Configurar ClassBase"
+
+            MutedLabel:
+                text: "Primeiro acesso: crie sua conta local."
+                size_hint_y: None
+                height: "42dp"
+
+            AppTextInput:
+                id: setup_username
+                hint_text: "Nome de usuário"
+
+            AppTextInput:
+                id: setup_password
+                hint_text: "Senha (12 caracteres ou mais)"
+                password: True
+
+            AppTextInput:
+                id: setup_confirm
+                hint_text: "Confirmar senha"
+                password: True
+                on_text_validate: root.configure_account()
+
+            MutedLabel:
+                text: "Guarde a senha em local seguro. Sem ela, o acesso aos dados locais não poderá ser recuperado por este aplicativo."
+                size_hint_y: None
+                height: "72dp"
+
+            FeedbackLabel:
+                id: setup_feedback
+                text: ""
+
+            PrimaryButton:
+                text: "Criar conta"
+                on_release: root.configure_account()
