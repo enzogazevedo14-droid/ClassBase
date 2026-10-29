@@ -1,0 +1,24 @@
+name: ClassBase 1.1 - Mobile QA safety checks
+
+on:
+  push:
+    branches:
+      - fix/classbase-11-mobile-qa-safety
+
+permissions:
+  contents: read
+
+jobs:
+  safety-contracts:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Compile Python syntax
+        run: python -m compileall -q database screens tests main.py
+      - name: Database, migration and deletion-confirmation contracts
+        run: |
+          python -m unittest -v tests.test_auth tests.test_students tests.test_courses tests.test_prephysical_integrity tests.test_delete_confirmation_contract
