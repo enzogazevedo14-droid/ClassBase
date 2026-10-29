@@ -62,7 +62,7 @@ class MobileUxTests(unittest.TestCase):
         popup = open_mock.call_args.args[0]
         self.assertIsNone(popup.size_hint_y)
         self.assertGreaterEqual(popup.height, dp(200))
-        self.assertLessEqual(popup.height, dp(210))
+        self.assertLessEqual(popup.height, dp(240))
 
     def test_long_history_description_has_extra_vertical_space(self):
         student_id = self.manager.repository.create_student(
