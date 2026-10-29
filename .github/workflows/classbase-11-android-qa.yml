@@ -1,0 +1,105 @@
+name: ClassBase 1.1 - Android QA (isolado)
+
+on:
+  push:
+    branches:
+      - ci/classbase-1.1-android-qa
+
+permissions:
+  contents: read
+
+jobs:
+  backend-and-apk:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    env:
+      PYTHONFORANDROID_PREREQUISITES_INSTALL_INTERACTIVE: "0"
+    steps:
+      - name: Obter codigo da branch isolada
+        uses: actions/checkout@v4
+
+      - name: Configurar Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Testes de banco e integridade sem Kivy
+        run: |
+          python -m unittest -v tests.test_auth tests.test_students tests.test_courses tests.test_prephysical_integrity
+
+      - name: Verificar sintaxe do codigo
+        run: |
+          python -m compileall -q database screens tests main.py
+
+      - name: Configurar Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Instalar dependencias do compilador Linux
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y git zip unzip autoconf automake libtool pkg-config cmake libffi-dev libssl-dev zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo6 autopoint gettext
+          python -m pip install --upgrade pip setuptools wheel
+          python -m pip install buildozer==1.6.0 Cython==0.29.34
+
+      - name: Isolar APK DEV da versao 1.0
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          path = Path("buildozer.spec")
+          lines = path.read_text(encoding="utf-8").splitlines()
+          replacements = {
+              "title": "ClassBase 1.1 DEV",
+              "package.domain": "org.classbase.dev",
+              "package.name": "classbase",
+              "version": "0.2.2",
+              "android.api": "33",
+          }
+          changed = set()
+          output = []
+          for line in lines:
+              stripped = line.strip()
+              if not stripped.startswith("#") and "=" in stripped:
+                  key = stripped.split("=", 1)[0].strip()
+                  if key in replacements:
+                      output.append(f"{key} = {replacements[key]}")
+                      changed.add(key)
+                      continue
+              output.append(line)
+          for key, value in replacements.items():
+              if key not in changed:
+                  # Inserir a chave em [app] antes da proxima secao.
+                  idx = output.index("[buildozer]") if "[buildozer]" in output else len(output)
+                  output.insert(idx, f"{key} = {value}")
+          path.write_text("\n".join(output) + "\n", encoding="utf-8")
+          print("Package DEV: org.classbase.dev.classbase; version: 0.2.2")
+          PY
+
+      - name: Compilar APK debug Android
+        run: |
+          buildozer -v android debug 2>&1 | tee buildozer.log
+
+      - name: Conferir saida APK
+        run: |
+          find bin -maxdepth 1 -type f -name '*.apk' -print
+          test -n "$(find bin -maxdepth 1 -type f -name '*.apk' -print -quit)"
+
+      - name: Guardar APK de teste
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ClassBase-1.1-DEV-0.2.2-APK
+          path: bin/*.apk
+          retention-days: 7
+          if-no-files-found: error
+
+      - name: Guardar log para diagnostico
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ClassBase-1.1-Build-Log
+          path: buildozer.log
+          retention-days: 7
+          if-no-files-found: ignore
