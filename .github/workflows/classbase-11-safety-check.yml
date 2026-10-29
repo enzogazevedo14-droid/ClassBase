@@ -21,4 +21,4 @@ jobs:
         run: python -m compileall -q database screens tests main.py
       - name: Database, migration and deletion-confirmation contracts
         run: |
-          python -m unittest -v tests.test_auth tests.test_students tests.test_courses tests.test_prephysical_integrity tests.test_delete_confirmation_contract
+          python -m unittest -v tests.test_auth tests.test_students tests.test_courses tests.test_prephysical_integrity tests.test_delete_confirmation_contract tests.test_course_edit_layout_contract
