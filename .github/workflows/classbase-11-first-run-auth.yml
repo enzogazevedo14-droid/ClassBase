@@ -31,7 +31,7 @@ jobs:
     timeout-minutes: 20
     env:
       KIVY_NO_ARGS: "1"
-      KIVY_NO_CONSOLELOG: "1"
+      KIVY_NO_CONSOLELOG: "0"
     steps:
       - name: Obter branch isolada
         uses: actions/checkout@v4
