@@ -12,6 +12,8 @@ from database import (
 )
 from screens import (
     ClassBaseScreenManager,
+    InitialSetupScreen,
+    ChangeDemoPasswordScreen,
     CourseScreen,
     EditStudentScreen,
     HistoryScreen,
@@ -28,6 +30,8 @@ KV_DIR = BASE_DIR / "kv"
 KV_FILES = (
     "theme.kv",
     "login.kv",
+    "configuracao_inicial.kv",
+    "alterar_senha.kv",
     "home.kv",
     "cadastro.kv",
     "alunos.kv",
@@ -65,7 +69,6 @@ class ClassBaseApp(App):
         manager.course_repository = CourseRepository(database_path)
         manager.history_repository = HistoryRepository(database_path)
         manager.auth_repository = AuthRepository(database_path)
-        manager.auth_repository.ensure_default_user()
         manager.add_widget(LoginScreen(name="login"))
         manager.add_widget(HomeScreen(name="home"))
         manager.add_widget(RegisterStudentScreen(name="cadastro"))
@@ -74,6 +77,11 @@ class ClassBaseApp(App):
         manager.add_widget(EditStudentScreen(name="editar"))
         manager.add_widget(CourseScreen(name="cursos"))
         manager.add_widget(HistoryScreen(name="historico"))
+        manager.add_widget(InitialSetupScreen(name="configurar"))
+        manager.add_widget(ChangeDemoPasswordScreen(name="alterar_senha"))
+        manager.current = (
+            "configurar" if manager.auth_repository.count_users() == 0 else "login"
+        )
         return manager
 
 
