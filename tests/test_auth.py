@@ -43,11 +43,9 @@ class AuthRepositoryTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "já existe"):
             self.repo.create_user("admin", "outra")
 
-    def test_default_user_is_created_once(self):
-        self.assertTrue(self.repo.ensure_default_user())
-        self.assertFalse(self.repo.ensure_default_user())
-        self.assertEqual(self.repo.count_users(), 1)
-        self.assertTrue(self.repo.authenticate("admin", "classbase123"))
+    def test_new_database_has_no_default_credentials(self):
+        self.assertEqual(self.repo.count_users(), 0)
+        self.assertFalse(self.repo.authenticate("admin", "classbase123"))
 
 
 if __name__ == "__main__":
