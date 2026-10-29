@@ -124,49 +124,56 @@ class CourseScreen(Screen):
         content = BoxLayout(
             orientation="vertical",
             padding=dp(10),
-            spacing=dp(6),
+            spacing=dp(8),
         )
-        name_input = TextInput(
-            text=course["nome"],
-            multiline=False,
-            size_hint_y=None,
-            height=dp(44),
-        )
-
+        # No Android o teclado pode cobrir a parte inferior do popup.
+        # Manter as ações acima do campo permite salvar com o teclado aberto.
         actions = BoxLayout(
             size_hint_y=None,
-            height=dp(42),
-            spacing=dp(6),
+            height=dp(48),
+            spacing=dp(8),
         )
         cancel_button = Button(text="Cancelar")
         save_button = Button(text="Salvar")
         actions.add_widget(cancel_button)
         actions.add_widget(save_button)
-        content.add_widget(name_input)
         content.add_widget(actions)
+
+        name_input = TextInput(
+            text=course["nome"],
+            multiline=False,
+            size_hint_y=None,
+            height=dp(48),
+        )
+        content.add_widget(name_input)
 
         popup_feedback = Label(
             text="",
             color=ERROR_COLOR,
             size_hint_y=None,
-            height=dp(22),
+            height=dp(32),
         )
         content.add_widget(popup_feedback)
 
         popup = Popup(
             title="Editar curso",
             content=content,
-            size_hint=(0.88, None),
-            height=dp(205),
+            size_hint=(0.92, None),
+            height=dp(225),
             auto_dismiss=False,
         )
         cancel_button.bind(on_release=popup.dismiss)
 
+        saved = False
+
         def save_course(*_):
+            nonlocal saved
+            if saved:
+                return
+
             try:
                 updated = self.manager.course_repository.update_course(
-                    course_id,
-                    name_input.text,
+                    course_id, name_input.text
                 )
             except ValueError as exc:
                 popup_feedback.text = str(exc)
@@ -176,13 +183,18 @@ class CourseScreen(Screen):
                 popup_feedback.text = "Curso não encontrado."
                 return
 
+            saved = True
+            name_input.focus = False
             popup.dismiss()
             self.ids.feedback.color = SUCCESS_COLOR
             self.ids.feedback.text = "Curso atualizado com sucesso."
             self.refresh_courses()
             self._refresh_student_course_choices()
 
+        # A tecla Concluir/Enter do Android também salva, sem exigir
+        # que o usuário feche o teclado e localize o botão manualmente.
         save_button.bind(on_release=save_course)
+        name_input.bind(on_text_validate=save_course)
         popup.open()
         return True
 
