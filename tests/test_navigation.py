@@ -1,13 +1,20 @@
+import tempfile
 import unittest
+from pathlib import Path
 
 from main import ClassBaseApp
 
 
 class NavigationTests(unittest.TestCase):
-    def test_app_contains_planned_screens(self):
-        app = ClassBaseApp()
-        manager = app.build()
+    def setUp(self):
+        self.temp_dir = tempfile.TemporaryDirectory()
+        self.app = ClassBaseApp(db_path=Path(self.temp_dir.name) / "navigation.db")
 
+    def tearDown(self):
+        self.temp_dir.cleanup()
+
+    def test_app_contains_planned_screens(self):
+        manager = self.app.build()
         self.assertEqual(
             manager.screen_names,
             [
@@ -19,14 +26,14 @@ class NavigationTests(unittest.TestCase):
                 "editar",
                 "cursos",
                 "historico",
+                "configurar",
+                "alterar_senha",
             ],
         )
-        self.assertEqual(manager.current, "login")
+        self.assertEqual(manager.current, "configurar")
 
     def test_navigation_targets_exist(self):
-        app = ClassBaseApp()
-        manager = app.build()
-
+        manager = self.app.build()
         for screen_name in (
             "home",
             "cadastro",
